@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import {
-  Brain,
-  Shield,
   BookOpen,
-  Heart,
-  MessageCircle,
   ChevronLeft,
-  Users,
+  ClipboardList,
+  Clock,
+  Ear,
+  HeartHandshake,
+  MessageSquare,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import ModeCard from "@/components/ui/ModeCard";
@@ -16,72 +16,114 @@ import CopyButton from "@/components/ui/CopyButton";
 
 const tools = [
   {
-    id: "decode",
-    label: "Décoder",
-    description: "Comprendre ce que l'enfant exprime",
-    icon: <Brain size={20} strokeWidth={1.5} />,
+    id: "consigne",
+    label: "Rendre une consigne plus claire",
+    description: "Reformuler en étapes concrètes",
+    icon: <ClipboardList size={20} strokeWidth={1.5} />,
     color: "#3563E9",
     bgColor: "#EFF3FE",
   },
   {
-    id: "rephrase",
-    label: "Reformuler",
-    description: "Dire autrement une instruction",
-    icon: <MessageCircle size={20} strokeWidth={1.5} />,
+    id: "regle",
+    label: "Expliquer une règle",
+    description: "Donner du sens à une règle sociale",
+    icon: <BookOpen size={20} strokeWidth={1.5} />,
     color: "#5B9279",
     bgColor: "#E8F5EE",
   },
   {
-    id: "protect",
-    label: "Protéger",
-    description: "Repérer une situation à risque",
-    icon: <Shield size={20} strokeWidth={1.5} />,
-    color: "#C2413A",
-    bgColor: "#FDF0EF",
+    id: "transition",
+    label: "Préparer une transition",
+    description: "Annoncer un changement d'activité",
+    icon: <Clock size={20} strokeWidth={1.5} />,
+    color: "#D4A017",
+    bgColor: "#FDF8E8",
   },
   {
-    id: "guide",
-    label: "Guider",
-    description: "Aider dans les interactions sociales",
-    icon: <Users size={20} strokeWidth={1.5} />,
+    id: "crise",
+    label: "Désamorcer une crise",
+    description: "Apaiser sans escalade",
+    icon: <HeartHandshake size={20} strokeWidth={1.5} />,
     color: "#E07A5F",
     bgColor: "#FDF1EE",
   },
   {
-    id: "calm",
-    label: "Apaiser",
-    description: "Gérer une crise émotionnelle",
-    icon: <Heart size={20} strokeWidth={1.5} />,
+    id: "script",
+    label: "Créer un script social",
+    description: "Préparer une situation à l'avance",
+    icon: <MessageSquare size={20} strokeWidth={1.5} />,
     color: "#9B8EC4",
     bgColor: "#F3F1F9",
   },
   {
-    id: "teach",
-    label: "Apprendre",
-    description: "Expliquer une situation sociale",
-    icon: <BookOpen size={20} strokeWidth={1.5} />,
-    color: "#D4A017",
-    bgColor: "#FDF8E8",
+    id: "raconter",
+    label: "Aider à raconter",
+    description: "Soutenir l'enfant pour exprimer un fait",
+    icon: <Ear size={20} strokeWidth={1.5} />,
+    color: "#7B9E6B",
+    bgColor: "#F0F5ED",
   },
 ];
 
-const mockReformulations: Record<string, string[]> = {
-  "Arrête de faire ça": [
-    "Je vois que tu as beaucoup d'énergie. Pouvons-nous trouver une autre façon de l'utiliser ?",
-    "Ce comportement n'est pas adapté ici. Que pourrions-nous faire à la place ?",
-    "Je comprends que tu as envie, mais cela dérange les autres. Voyons ensemble ce qui est possible.",
+const mockByTool: Record<string, (text: string, age: string) => string[]> = {
+  consigne: (text) => {
+    const lower = text.toLowerCase();
+    if (lower.includes("depeche") || lower.includes("dépêche") || lower.includes("vite")) {
+      return [
+        "Dans 5 minutes, nous mettons les chaussures.",
+        "Ensuite, nous sortons de la maison.",
+        "Je vais t'aider étape par étape.",
+      ];
+    }
+    if (lower.includes("range") || lower.includes("ranger")) {
+      return [
+        "On va ranger ensemble les jouets dans la boîte bleue.",
+        "Après, on pose les livres sur l'étagère.",
+        "Tu peux commencer par ce qui est le plus proche de toi.",
+      ];
+    }
+    return [
+      "Étape 1 : pose très simplement ce que tu attends, sans métaphore.",
+      "Étape 2 : indique le temps disponible (par ex. \"dans 5 minutes\").",
+      "Étape 3 : propose une aide concrète : \"je t'aide à commencer\".",
+    ];
+  },
+  regle: (text) => [
+    `La règle "${text}" sert à protéger tout le monde dans le groupe.`,
+    "Quand on la respecte, on se sent en sécurité et on peut jouer plus tranquillement.",
+    "Si elle n'est pas claire pour toi, on peut en reparler ensemble.",
   ],
-  "Pourquoi tu ne joues pas avec les autres ?": [
-    "Tu préfères observer pour l'instant. C'est tout à fait ok. Quand tu seras prêt, les autres seront là.",
-    "Chacun a son rythme pour les interactions sociales. Que puis-je faire pour t'aider à te sentir à l'aise ?",
-    "Je remarque que tu choisis de rester à l'écart. Souhaites-tu que je t'accompagne pour rejoindre les autres ?",
+  transition: () => [
+    "Dans quelques minutes, on va changer d'activité.",
+    "Tu peux finir ce que tu fais maintenant.",
+    "Je te préviens encore une fois avant qu'on bouge.",
   ],
-  "Tu ne comprends rien": [
-    "Je vois que c'est difficile. Prenons le temps d'y aller étape par étape.",
-    "Chaque personne apprend à son rythme. Quelle partie te semble la plus difficile ?",
-    "Ce n'est pas grave de ne pas comprendre tout de suite. Je suis là pour t'expliquer autrement.",
+  crise: () => [
+    "Je vois que c'est très difficile en ce moment. Tu n'es pas seul.",
+    "On va respirer ensemble une fois, doucement.",
+    "Quand tu seras prêt, on cherchera une solution ensemble. Rien ne presse.",
+  ],
+  script: (text) => [
+    `Situation : ${text}`,
+    "Ce que tu peux faire : t'approcher calmement et attendre qu'on te regarde.",
+    "Ce que tu peux dire : \"Bonjour, est-ce que je peux jouer avec vous ?\"",
+    "Si la réponse est non : ce n'est pas grave, tu peux demander à quelqu'un d'autre.",
+  ],
+  raconter: () => [
+    "Prends ton temps. Tu peux commencer par : où est-ce que c'est arrivé ?",
+    "Ensuite, qui était avec toi ?",
+    "Qu'est-ce qui s'est passé en premier ? Et après ?",
+    "Comment tu t'es senti pendant ce moment ?",
   ],
 };
+
+function genericReformulation(text: string, age: string, context: string): string[] {
+  return [
+    `Pour un enfant de ${age} dans le cadre ${context} : "${text}" gagne à être formulé en phrases courtes et concrètes.`,
+    "Privilégier une consigne par phrase, sans métaphore, sans ironie.",
+    "Annoncer le temps disponible et proposer une aide pour commencer.",
+  ];
+}
 
 export default function EducatorPage() {
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
@@ -90,19 +132,15 @@ export default function EducatorPage() {
   const [age, setAge] = useState("6-10");
   const [results, setResults] = useState<string[] | null>(null);
 
+  const selectedToolData = tools.find((tool) => tool.id === selectedTool);
+
   const handleReformulate = () => {
-    if (!text.trim()) return;
-    const key = Object.keys(mockReformulations).find((k) =>
-      text.toLowerCase().includes(k.toLowerCase())
-    );
-    if (key) {
-      setResults(mockReformulations[key]);
+    if (!text.trim() || !selectedTool) return;
+    const gen = mockByTool[selectedTool];
+    if (gen) {
+      setResults(gen(text, age));
     } else {
-      setResults([
-        `Pour un enfant de ${age} ans (${context}): "${text}" pourrait se dire autrement en adaptant le vocabulaire et le ton.`,
-        `Version plus douce: "Je vois que c'est difficile. Prenons le temps d'en parler calmement."`,
-        `Version plus directe: "Ce que tu viens de dire/FAire a un impact. Voici ce que j'attends à la place."`,
-      ]);
+      setResults(genericReformulation(text, age, context));
     }
   };
 
@@ -117,17 +155,15 @@ export default function EducatorPage() {
       <main className="px-5 pt-6 pb-8">
         {!selectedTool ? (
           <>
-            {/* Header */}
             <div className="mb-6">
               <h1 className="text-xl font-bold text-[#1E293B] mb-1">
-                Parent / Enseignant
+                Accompagner un enfant
               </h1>
               <p className="text-sm text-[#64748B]">
-                Outils pour accompagner et mieux communiquer.
+                Outils pour parents, AESH et enseignants.
               </p>
             </div>
 
-            {/* Tools Grid */}
             <div className="grid grid-cols-2 gap-3">
               {tools.map((tool) => (
                 <ModeCard
@@ -142,7 +178,6 @@ export default function EducatorPage() {
               ))}
             </div>
 
-            {/* Info Banner */}
             <div className="mt-6 bg-[#F0F5ED] border border-[#7B9E6B]/20 rounded-2xl p-4">
               <p className="text-xs text-[#5B9279] leading-relaxed">
                 Ces outils sont des aides à la communication. Chaque enfant est
@@ -152,7 +187,6 @@ export default function EducatorPage() {
           </>
         ) : (
           <>
-            {/* Back */}
             <button
               onClick={handleBack}
               className="flex items-center gap-1 text-sm text-[#64748B] hover:text-[#1E293B] transition-colors mb-4"
@@ -161,17 +195,15 @@ export default function EducatorPage() {
               Retour
             </button>
 
-            {/* Tool Header */}
             <div className="mb-6">
               <h1 className="text-xl font-bold text-[#1E293B] mb-1">
-                {tools.find((t) => t.id === selectedTool)?.label}
+                {selectedToolData?.label}
               </h1>
               <p className="text-sm text-[#64748B]">
-                {tools.find((t) => t.id === selectedTool)?.description}
+                {selectedToolData?.description}
               </p>
             </div>
 
-            {/* Input */}
             <div className="mb-6">
               <textarea
                 value={text}
@@ -182,7 +214,6 @@ export default function EducatorPage() {
               />
             </div>
 
-            {/* Context */}
             <div className="mb-4">
               <label className="text-xs font-medium text-[#64748B] mb-2 block">
                 Contexte
@@ -199,7 +230,6 @@ export default function EducatorPage() {
               </select>
             </div>
 
-            {/* Age */}
             <div className="mb-6">
               <label className="text-xs font-medium text-[#64748B] mb-2 block">
                 Âge de l&apos;enfant
@@ -216,7 +246,6 @@ export default function EducatorPage() {
               </select>
             </div>
 
-            {/* Reformulate Button */}
             <button
               onClick={handleReformulate}
               disabled={!text.trim()}
@@ -229,7 +258,6 @@ export default function EducatorPage() {
               Reformuler
             </button>
 
-            {/* Results */}
             {results && (
               <div className="space-y-4">
                 <h2 className="text-base font-semibold text-[#1E293B]">
@@ -238,7 +266,8 @@ export default function EducatorPage() {
                 {results.map((result, i) => (
                   <div
                     key={i}
-                    className="bg-white rounded-2xl border border-[#E2E0D9] shadow-sm p-4 animate-stagger stagger-1"
+                    className="bg-white rounded-2xl border border-[#E2E0D9] shadow-sm p-4 animate-stagger"
+                    style={{ animationDelay: `${i * 0.05}s` }}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-start gap-3">
@@ -258,7 +287,6 @@ export default function EducatorPage() {
           </>
         )}
       </main>
-
     </AppShell>
   );
 }
