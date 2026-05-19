@@ -1,23 +1,31 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
-  ChevronLeft,
-  Bookmark,
-  Volume2,
-  ArrowDown,
   AlertTriangle,
+  Bookmark,
+  ChevronDown,
+  ChevronLeft,
+  ChevronUp,
+  Minimize2,
+  Volume2,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import BottomNav from "@/components/layout/BottomNav";
 import AnalysisCard from "@/components/ui/AnalysisCard";
 import HypothesisCard from "@/components/ui/HypothesisCard";
 import ResponseVariantCard from "@/components/ui/ResponseVariantCard";
 import Toast from "@/components/ui/Toast";
 import { analyzeText } from "@/lib/analysis";
 import { saveAnalysis } from "@/lib/storage";
-import { TranslationDirection, ContextType, ResponseVariant } from "@/types";
+import { ContextType, ResponseVariant, TranslationDirection } from "@/types";
+
+type ViewMode = "minimal" | "essential" | "complete";
+
+function firstSentence(text: string): string {
+  const [first] = text.split(/(?<=[.!?])\s+/);
+  return first || text;
+}
 
 export default function ResultContent() {
   const router = useRouter();
@@ -31,11 +39,9 @@ export default function ResultContent() {
     (searchParams.get("context") as ContextType) || "inconnu";
 
   const result = analyzeText(text, direction, context);
-
-  const [simplified, setSimplified] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("essential");
   const [toast, setToast] = useState({ message: "", visible: false });
   const [saved, setSaved] = useState(false);
-  const resultRef = useRef<HTMLDivElement>(null);
 
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
@@ -58,6 +64,10 @@ export default function ResultContent() {
     }
   }, [result, showToast]);
 
+  const toggleLightMode = () => {
+    setViewMode((current) => (current === "minimal" ? "essential" : "minimal"));
+  };
+
   const responseVariants: { variant: ResponseVariant; text: string }[] = [
     { variant: "short", text: result.shortAnswer },
     { variant: "direct", text: result.directAnswer },
@@ -69,10 +79,11 @@ export default function ResultContent() {
       : []),
   ];
 
+  const essentialVariants = responseVariants.slice(0, 3);
+
   return (
     <AppShell>
-      <div ref={resultRef}>
-        {/* Header */}
+      <div>
         <div className="sticky top-0 z-40 bg-[#F8F6F0]/80 backdrop-blur-md border-b border-[#E2E0D9]">
           <div className="flex items-center justify-between px-4 py-3">
             <button
@@ -90,120 +101,164 @@ export default function ResultContent() {
         </div>
 
         <main className="px-5 pt-4 pb-8 space-y-4">
-          {/* Original */}
           <div className="bg-[#EFF3FE] rounded-2xl p-4 border border-[#3563E9]/10">
-            <p className="text-xs font-medium text-[#3563E9] mb-1">Phrase analysée</p>
+            <p className="text-xs font-medium text-[#3563E9] mb-1">
+              Phrase analysée
+            </p>
             <p className="text-base font-medium text-[#1E293B]">&ldquo;{text}&rdquo;</p>
           </div>
 
-          {/* Clear Translation */}
-          <AnalysisCard
-            title="Traduction claire"
-            color="#3563E9"
-            bgColor="#EFF3FE"
-          >
-            <p className="text-sm text-[#1E293B] leading-relaxed">
-              {simplified
-                ? result.clearTranslation.split(". ")[0] + "."
-                : result.clearTranslation}
-            </p>
-          </AnalysisCard>
-
-          {/* Literal Meaning */}
-          {!simplified && (
-            <AnalysisCard
-              title="Sens littéral"
-              color="#5B9279"
-              bgColor="#E8F5EE"
-            >
-              <p className="text-sm text-[#1E293B] leading-relaxed">
-                {result.literalMeaning}
-              </p>
-            </AnalysisCard>
+          {viewMode === "minimal" && (
+            <section className="space-y-3">
+              <AnalysisCard title="En une phrase" color="#3563E9" bgColor="#EFF3FE">
+                <p className="text-base text-[#1E293B] leading-relaxed">
+                  {firstSentence(result.clearTranslation)}
+                </p>
+              </AnalysisCard>
+              <AnalysisCard title="Tu peux répondre" color="#5B9279" bgColor="#E8F5EE">
+                <p className="text-base text-[#1E293B] leading-relaxed">
+                  {result.shortAnswer}
+                </p>
+              </AnalysisCard>
+              <button
+                onClick={() => setViewMode("essential")}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white border border-[#E2E0D9] rounded-2xl text-sm font-medium text-[#1E293B] hover:bg-[#F1F0EB] transition-colors"
+              >
+                <ChevronDown size={16} strokeWidth={1.5} />
+                Afficher un peu plus
+              </button>
+            </section>
           )}
 
-          {/* Social Meaning */}
-          {!simplified && (
-            <AnalysisCard
-              title="Sens social possible"
-              color="#E07A5F"
-              bgColor="#FDF1EE"
-            >
-              <p className="text-sm text-[#1E293B] leading-relaxed">
-                {result.possibleSocialMeaning}
-              </p>
-            </AnalysisCard>
+          {viewMode === "essential" && (
+            <section className="space-y-4">
+              <AnalysisCard title="Traduction claire" color="#3563E9" bgColor="#EFF3FE">
+                <p className="text-sm text-[#1E293B] leading-relaxed">
+                  {result.clearTranslation}
+                </p>
+              </AnalysisCard>
+              <AnalysisCard title="Question à poser" color="#9B8EC4" bgColor="#F3F1F9">
+                <p className="text-sm text-[#1E293B] leading-relaxed italic">
+                  &ldquo;{result.clarifyingQuestion}&rdquo;
+                </p>
+              </AnalysisCard>
+
+              <div>
+                <h2 className="text-base font-semibold text-[#1E293B] mb-3">
+                  Réponses utiles
+                </h2>
+                <div className="space-y-3">
+                  {essentialVariants.map((rv, i) => (
+                    <div
+                      key={rv.variant}
+                      className="animate-stagger"
+                      style={{ animationDelay: `${i * 0.05}s` }}
+                    >
+                      <ResponseVariantCard variant={rv.variant} text={rv.text} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={() => setViewMode("complete")}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white border border-[#E2E0D9] rounded-2xl text-sm font-medium text-[#1E293B] hover:bg-[#F1F0EB] transition-colors"
+              >
+                <ChevronDown size={16} strokeWidth={1.5} />
+                Voir l&apos;analyse complète
+              </button>
+            </section>
           )}
 
-          {/* Certain */}
-          <AnalysisCard
-            title="Ce qui est sûr"
-            color="#5B9279"
-            bgColor="#E8F5EE"
-          >
-            <ul className="space-y-1.5">
-              {result.certain.map((item, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm text-[#1E293B]">
-                  <span className="text-[#5B9279] mt-1 shrink-0">&#10003;</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </AnalysisCard>
-
-          {/* Uncertain */}
-          {!simplified && (
-            <AnalysisCard
-              title="Ce qui est incertain"
-              color="#D4A017"
-              bgColor="#FDF8E8"
-            >
-              <ul className="space-y-1.5">
-                {result.uncertain.map((item, i) => (
-                  <li
-                    key={i}
-                    className="flex items-start gap-2 text-sm text-[#1E293B]"
-                  >
-                    <span className="text-[#D4A017] mt-1 shrink-0">?</span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </AnalysisCard>
-          )}
-
-          {/* Hypotheses */}
-          {!simplified && <HypothesisCard hypotheses={result.hypotheses} />}
-
-          {/* Clarifying Question */}
-          <AnalysisCard
-            title="Question à poser"
-            color="#9B8EC4"
-            bgColor="#F3F1F9"
-          >
-            <p className="text-sm text-[#1E293B] leading-relaxed italic">
-              &ldquo;{result.clarifyingQuestion}&rdquo;
-            </p>
-          </AnalysisCard>
-
-          {/* Responses */}
-          <div>
-            <h2 className="text-base font-semibold text-[#1E293B] mb-3">
-              Réponses suggérées
-            </h2>
-            <div className="space-y-3">
-              {responseVariants.map((rv, i) => (
+          {viewMode === "complete" && (
+            <section className="space-y-4">
+              {[
+                <AnalysisCard key="clear" title="Traduction claire" color="#3563E9" bgColor="#EFF3FE">
+                  <p className="text-sm text-[#1E293B] leading-relaxed">
+                    {result.clearTranslation}
+                  </p>
+                </AnalysisCard>,
+                <AnalysisCard key="literal" title="Sens littéral" color="#5B9279" bgColor="#E8F5EE">
+                  <p className="text-sm text-[#1E293B] leading-relaxed">
+                    {result.literalMeaning}
+                  </p>
+                </AnalysisCard>,
+                <AnalysisCard key="social" title="Sens social possible" color="#E07A5F" bgColor="#FDF1EE">
+                  <p className="text-sm text-[#1E293B] leading-relaxed">
+                    {result.possibleSocialMeaning}
+                  </p>
+                </AnalysisCard>,
+                <AnalysisCard key="certain" title="Ce qui est sûr" color="#5B9279" bgColor="#E8F5EE">
+                  <ul className="space-y-1.5">
+                    {result.certain.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-[#1E293B]">
+                        <span className="text-[#5B9279] mt-1 shrink-0">&#10003;</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </AnalysisCard>,
+                <AnalysisCard key="uncertain" title="Ce qui est incertain" color="#D4A017" bgColor="#FDF8E8">
+                  <ul className="space-y-1.5">
+                    {result.uncertain.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-[#1E293B]">
+                        <span className="text-[#D4A017] mt-1 shrink-0">?</span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </AnalysisCard>,
+                <HypothesisCard key="hypotheses" hypotheses={result.hypotheses} />,
+                <AnalysisCard key="question" title="Question à poser" color="#9B8EC4" bgColor="#F3F1F9">
+                  <p className="text-sm text-[#1E293B] leading-relaxed italic">
+                    &ldquo;{result.clarifyingQuestion}&rdquo;
+                  </p>
+                </AnalysisCard>,
+              ].map((card, i) => (
                 <div
-                  key={rv.variant}
-                  className={`animate-stagger stagger-${i + 1}`}
+                  key={card.key}
+                  className="animate-stagger"
+                  style={{ animationDelay: `${i * 0.05}s` }}
                 >
-                  <ResponseVariantCard variant={rv.variant} text={rv.text} />
+                  {card}
                 </div>
               ))}
-            </div>
-          </div>
 
-          {/* Ethics Banner */}
+              <div>
+                <h2 className="text-base font-semibold text-[#1E293B] mb-3">
+                  Réponses suggérées
+                </h2>
+                <div className="space-y-3">
+                  {responseVariants.map((rv, i) => (
+                    <div
+                      key={rv.variant}
+                      className="animate-stagger"
+                      style={{ animationDelay: `${i * 0.05}s` }}
+                    >
+                      <ResponseVariantCard variant={rv.variant} text={rv.text} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {result.selfRegulationTip && (
+                <AnalysisCard title="Conseil de régulation" color="#5B9279" bgColor="#E8F5EE">
+                  <p className="text-sm text-[#1E293B] leading-relaxed">
+                    {result.selfRegulationTip}
+                  </p>
+                </AnalysisCard>
+              )}
+
+              <button
+                onClick={() => setViewMode("essential")}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-white border border-[#E2E0D9] rounded-2xl text-sm font-medium text-[#1E293B] hover:bg-[#F1F0EB] transition-colors"
+              >
+                <ChevronUp size={16} strokeWidth={1.5} />
+                Replier l&apos;analyse
+              </button>
+            </section>
+          )}
+
           <div className="bg-[#FDF8E8] border border-[#FDF8E8] rounded-2xl p-4 flex items-start gap-3">
             <div style={{ color: "#D4A017" }} className="shrink-0 mt-0.5">
               <AlertTriangle size={18} strokeWidth={1.5} />
@@ -213,27 +268,13 @@ export default function ResultContent() {
             </p>
           </div>
 
-          {/* Self Regulation Tip */}
-          {result.selfRegulationTip && (
-            <AnalysisCard
-              title="Conseil de régulation"
-              color="#5B9279"
-              bgColor="#E8F5EE"
-            >
-              <p className="text-sm text-[#1E293B] leading-relaxed">
-                {result.selfRegulationTip}
-              </p>
-            </AnalysisCard>
-          )}
-
-          {/* Action Buttons */}
           <div className="flex gap-3 pt-2">
             <button
-              onClick={() => setSimplified(!simplified)}
+              onClick={toggleLightMode}
               className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-white border border-[#E2E0D9] rounded-2xl text-sm font-medium text-[#1E293B] hover:bg-[#F1F0EB] transition-colors"
             >
-              <ArrowDown size={16} strokeWidth={1.5} />
-              {simplified ? "Détailler" : "Simplifier"}
+              <Minimize2 size={16} strokeWidth={1.5} />
+              {viewMode === "minimal" ? "Essentiel" : "Alléger"}
             </button>
             <button
               onClick={handleSave}
@@ -262,8 +303,6 @@ export default function ResultContent() {
         visible={toast.visible}
         onDismiss={() => setToast({ message: "", visible: false })}
       />
-
-      <BottomNav />
     </AppShell>
   );
 }

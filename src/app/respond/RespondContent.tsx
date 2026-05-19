@@ -3,7 +3,6 @@
 import { useState, useCallback } from "react";
 import { RotateCcw, Bookmark } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import BottomNav from "@/components/layout/BottomNav";
 import ContextPicker from "@/components/ui/ContextPicker";
 import ResponseVariantCard from "@/components/ui/ResponseVariantCard";
 import Toast from "@/components/ui/Toast";
@@ -12,12 +11,12 @@ import { saveAnalysis } from "@/lib/storage";
 import { AnalysisResult, ContextType, ResponseVariant } from "@/types";
 
 const toneOptions: { value: ResponseVariant; label: string; color: string; bgColor: string }[] = [
-  { value: "short", label: "Court", color: "#5B9279", bgColor: "#E8F5EE" },
-  { value: "direct", label: "Direct", color: "#3563E9", bgColor: "#EFF3FE" },
-  { value: "soft", label: "Doux", color: "#E07A5F", bgColor: "#FDF1EE" },
-  { value: "professional", label: "Pro", color: "#64748B", bgColor: "#F1F5F9" },
-  { value: "boundary", label: "Limite", color: "#C2413A", bgColor: "#FDF0EF" },
-  { value: "child", label: "Enfant", color: "#9B8EC4", bgColor: "#F3F1F9" },
+  { value: "short", label: "Courte", color: "#5B9279", bgColor: "#E8F5EE" },
+  { value: "direct", label: "Directe", color: "#3563E9", bgColor: "#EFF3FE" },
+  { value: "soft", label: "Douce", color: "#E07A5F", bgColor: "#FDF1EE" },
+  { value: "professional", label: "Professionnelle", color: "#64748B", bgColor: "#F1F5F9" },
+  { value: "boundary", label: "Avec limite", color: "#C2413A", bgColor: "#FDF0EF" },
+  { value: "child", label: "Pour enfant", color: "#9B8EC4", bgColor: "#F3F1F9" },
 ];
 
 export default function RespondContent() {
@@ -46,6 +45,7 @@ export default function RespondContent() {
   const handleRestart = useCallback(() => {
     setText("");
     setResponses(null);
+    setContext("inconnu");
     setSelectedTones(["short", "direct", "soft"]);
   }, []);
 
@@ -211,7 +211,6 @@ export default function RespondContent() {
         onDismiss={() => setToast({ message: "", visible: false })}
       />
 
-      <BottomNav />
     </AppShell>
   );
 }

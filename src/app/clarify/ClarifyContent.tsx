@@ -2,11 +2,11 @@
 
 import { useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mic } from "lucide-react";
+import { Loader2, Mic } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import BottomNav from "@/components/layout/BottomNav";
 import DirectionSelector from "@/components/ui/DirectionSelector";
 import ContextPicker from "@/components/ui/ContextPicker";
+import Toast from "@/components/ui/Toast";
 import { TranslationDirection, ContextType } from "@/types";
 
 const quickExamples = [
@@ -30,12 +30,17 @@ export default function ClarifyContent() {
   const [context, setContext] = useState<ContextType>(
     (searchParams.get("context") as ContextType) || "inconnu"
   );
+  const [toast, setToast] = useState({ message: "", visible: false });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClarify = useCallback(() => {
     if (!text.trim()) return;
-    router.push(
-      `/clarify/result?text=${encodeURIComponent(text.trim())}&direction=${direction}&context=${context}`
-    );
+    setIsLoading(true);
+    setTimeout(() => {
+      router.push(
+        `/clarify/result?text=${encodeURIComponent(text.trim())}&direction=${direction}&context=${context}`
+      );
+    }, 400);
   }, [text, direction, context, router]);
 
   const isValid = text.trim().length > 0;
@@ -64,8 +69,15 @@ export default function ClarifyContent() {
               className="w-full min-h-[120px] p-4 pr-12 bg-white border border-[#E2E0D9] rounded-2xl text-sm text-[#1E293B] placeholder:text-[#64748B]/60 focus:outline-none focus:border-[#3563E9] focus:ring-2 focus:ring-[#3563E9]/10 transition-all resize-none"
             />
             <button
+              type="button"
+              onClick={() =>
+                setToast({
+                  message: "Mode vocal bientôt disponible",
+                  visible: true,
+                })
+              }
               className="absolute bottom-3 right-3 w-8 h-8 flex items-center justify-center rounded-lg bg-[#F1F0EB] text-[#64748B] hover:bg-[#E2E0D9] transition-colors"
-              aria-label="Microphone"
+              aria-label="Microphone (bientôt disponible)"
             >
               <Mic size={16} strokeWidth={1.5} />
             </button>
@@ -117,19 +129,30 @@ export default function ClarifyContent() {
         <div className="w-full max-w-[430px] px-5">
           <button
             onClick={handleClarify}
-            disabled={!isValid}
+            disabled={!isValid || isLoading}
             className={`w-full py-3.5 px-6 rounded-2xl text-sm font-semibold shadow-lg transition-all duration-200 ${
-              isValid
+              isValid && !isLoading
                 ? "bg-[#3563E9] text-white hover:bg-[#2547B3] active:scale-[0.98]"
                 : "bg-[#E2E0D9] text-[#64748B] cursor-not-allowed"
             }`}
           >
-            Clarifier
+            {isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 size={16} className="animate-spin" strokeWidth={2} />
+                Analyse en cours...
+              </span>
+            ) : (
+              "Clarifier"
+            )}
           </button>
         </div>
       </div>
 
-      <BottomNav />
+      <Toast
+        message={toast.message}
+        visible={toast.visible}
+        onDismiss={() => setToast({ message: "", visible: false })}
+      />
     </AppShell>
   );
 }
