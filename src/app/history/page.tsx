@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Star, Trash2, Clock, ChevronDown, ChevronUp, Shield } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import BottomNav from "@/components/layout/BottomNav";
 import {
   getHistory,
   deleteAnalysis,
@@ -19,9 +18,20 @@ export default function HistoryPage() {
   const router = useRouter();
   const [filter, setFilter] = useState<"all" | "favorites">("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [history, setHistory] = useState<HistoryItem[]>(getHistory());
-  const [privacy, setPrivacy] = useState(getPrivacySetting());
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [privacy, setPrivacy] = useState(false);
+  const [hydrated, setHydrated] = useState(false);
   const [showClearConfirm, setShowClearConfirm] = useState(false);
+
+  useEffect(() => {
+    const hydrateTimer = window.setTimeout(() => {
+      setHistory(getHistory());
+      setPrivacy(getPrivacySetting());
+      setHydrated(true);
+    }, 0);
+
+    return () => window.clearTimeout(hydrateTimer);
+  }, []);
 
   const filteredHistory = history.filter((item) => {
     if (filter === "favorites") return item.favorite;
@@ -86,7 +96,7 @@ export default function HistoryPage() {
         </div>
 
         {/* Empty State */}
-        {filteredHistory.length === 0 && (
+        {hydrated && filteredHistory.length === 0 && (
           <div className="text-center py-12">
             <div className="w-16 h-16 bg-[#F1F0EB] rounded-full flex items-center justify-center mx-auto mb-4">
               <Clock size={24} className="text-[#64748B]" strokeWidth={1.5} />
@@ -276,7 +286,6 @@ export default function HistoryPage() {
         </div>
       </main>
 
-      <BottomNav />
     </AppShell>
   );
 }

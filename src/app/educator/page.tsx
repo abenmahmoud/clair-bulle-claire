@@ -11,7 +11,6 @@ import {
   Users,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import BottomNav from "@/components/layout/BottomNav";
 import ModeCard from "@/components/ui/ModeCard";
 import CopyButton from "@/components/ui/CopyButton";
 
@@ -260,7 +259,6 @@ export default function EducatorPage() {
         )}
       </main>
 
-      <BottomNav />
     </AppShell>
   );
 }

@@ -4,9 +4,9 @@ import { useState, useCallback } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Mic } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import BottomNav from "@/components/layout/BottomNav";
 import DirectionSelector from "@/components/ui/DirectionSelector";
 import ContextPicker from "@/components/ui/ContextPicker";
+import Toast from "@/components/ui/Toast";
 import { TranslationDirection, ContextType } from "@/types";
 
 const quickExamples = [
@@ -30,6 +30,7 @@ export default function ClarifyContent() {
   const [context, setContext] = useState<ContextType>(
     (searchParams.get("context") as ContextType) || "inconnu"
   );
+  const [toast, setToast] = useState({ message: "", visible: false });
 
   const handleClarify = useCallback(() => {
     if (!text.trim()) return;
@@ -64,8 +65,15 @@ export default function ClarifyContent() {
               className="w-full min-h-[120px] p-4 pr-12 bg-white border border-[#E2E0D9] rounded-2xl text-sm text-[#1E293B] placeholder:text-[#64748B]/60 focus:outline-none focus:border-[#3563E9] focus:ring-2 focus:ring-[#3563E9]/10 transition-all resize-none"
             />
             <button
+              type="button"
+              onClick={() =>
+                setToast({
+                  message: "Mode vocal bientôt disponible",
+                  visible: true,
+                })
+              }
               className="absolute bottom-3 right-3 w-8 h-8 flex items-center justify-center rounded-lg bg-[#F1F0EB] text-[#64748B] hover:bg-[#E2E0D9] transition-colors"
-              aria-label="Microphone"
+              aria-label="Microphone (bientôt disponible)"
             >
               <Mic size={16} strokeWidth={1.5} />
             </button>
@@ -129,7 +137,11 @@ export default function ClarifyContent() {
         </div>
       </div>
 
-      <BottomNav />
+      <Toast
+        message={toast.message}
+        visible={toast.visible}
+        onDismiss={() => setToast({ message: "", visible: false })}
+      />
     </AppShell>
   );
 }

@@ -12,7 +12,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import BottomNav from "@/components/layout/BottomNav";
 import { ChildEmotion } from "@/types";
 
 const emotionTiles: {
@@ -307,7 +306,6 @@ export default function ChildPage() {
         )}
       </main>
 
-      <BottomNav />
     </AppShell>
   );
 }

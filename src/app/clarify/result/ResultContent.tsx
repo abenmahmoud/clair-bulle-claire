@@ -10,7 +10,6 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import BottomNav from "@/components/layout/BottomNav";
 import AnalysisCard from "@/components/ui/AnalysisCard";
 import HypothesisCard from "@/components/ui/HypothesisCard";
 import ResponseVariantCard from "@/components/ui/ResponseVariantCard";
@@ -263,7 +262,6 @@ export default function ResultContent() {
         onDismiss={() => setToast({ message: "", visible: false })}
       />
 
-      <BottomNav />
     </AppShell>
   );
 }
