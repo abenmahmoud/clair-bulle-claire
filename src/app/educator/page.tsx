@@ -1,16 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Brain,
-  Ear,
   Shield,
   BookOpen,
   Heart,
   MessageCircle,
   ChevronLeft,
-  ArrowRight,
   Users,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
@@ -88,7 +85,6 @@ const mockReformulations: Record<string, string[]> = {
 };
 
 export default function EducatorPage() {
-  const router = useRouter();
   const [selectedTool, setSelectedTool] = useState<string | null>(null);
   const [text, setText] = useState("");
   const [context, setContext] = useState("ecole");

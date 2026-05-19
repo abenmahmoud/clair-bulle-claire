@@ -8,7 +8,6 @@ import BottomNav from "@/components/layout/BottomNav";
 import DirectionSelector from "@/components/ui/DirectionSelector";
 import ContextPicker from "@/components/ui/ContextPicker";
 import { TranslationDirection, ContextType } from "@/types";
-import { mockExamples } from "@/lib/mock-data";
 
 const quickExamples = [
   "On verra.",

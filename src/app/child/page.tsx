@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import {
   Frown,
   HelpCircle,
@@ -151,7 +150,6 @@ const conversations: Record<ChildEmotion, ConversationStep[]> = {
 };
 
 export default function ChildPage() {
-  const router = useRouter();
   const [selectedEmotion, setSelectedEmotion] = useState<ChildEmotion | null>(null);
   const [stepIndex, setStepIndex] = useState(0);
   const [conversation, setConversation] = useState<{ question: string; response?: string }[]>([]);

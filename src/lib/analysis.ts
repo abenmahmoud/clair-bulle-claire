@@ -127,7 +127,7 @@ function generateClarifyingQuestion(text: string, context: ContextType): string 
 }
 
 function simplifyForChild(text: string): string {
-  return `L'adulte dit quelque chose de compliqué. En simple : il veut peut-être dire autre chose que les mots qu'il utilise.`;
+  return `Pour la phrase "${text}", on peut dire en plus simple : il manque peut-être une information claire, donc tu peux demander à l'adulte d'expliquer autrement.`;
 }
 
 export function generateResponses(
@@ -135,11 +135,21 @@ export function generateResponses(
   context: ContextType,
   tones?: ResponseVariant[]
 ): Record<ResponseVariant, string> {
+  const contextLabel: Record<ContextType, string> = {
+    travail: "dans ce contexte professionnel",
+    couple: "dans cette relation",
+    famille: "dans ce cadre familial",
+    amitie: "dans cette relation amicale",
+    ecole: "dans ce contexte scolaire",
+    administration: "dans ce contexte administratif",
+    inconnu: "dans cette situation",
+  };
+
   const allResponses: Record<ResponseVariant, string> = {
     short: `OK, compris pour : "${text}"`,
     direct: `Je comprends ce que tu me dis. Pour être sûr : tu veux dire que [préciser le sens] ?`,
     soft: `Merci pour ton message. Je veux bien comprendre : pourrais-tu me dire un peu plus ?`,
-    professional: `Bien noté. Afin d'avancer sereinement, pourrions-nous clarifier les points suivants ?`,
+    professional: `Bien noté. Afin d'avancer sereinement ${contextLabel[context]}, pourrions-nous clarifier les points suivants ?`,
     boundary: `J'ai besoin de comprendre clairement ta demande pour pouvoir y répondre au mieux.`,
     child: `Quand quelqu'un dit ça, ça veut dire qu'il a peut-être besoin d'aide ou qu'il est énervé.`,
   };

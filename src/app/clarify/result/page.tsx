@@ -217,7 +217,7 @@ function ResultContent() {
         {/* Ethics banner */}
         <div className="rounded-2xl bg-[#FFF3E0] p-3 text-[12px] text-[#64748B]">
           <strong className="text-[#E67E22]">⚠ Prudence :</strong> Clair
-          propose des hypothèses prudentes. L'intention réelle d'une personne ne
+          propose des hypothèses prudentes. L&apos;intention réelle d&apos;une personne ne
           peut pas être connue avec certitude.
         </div>
       </div>

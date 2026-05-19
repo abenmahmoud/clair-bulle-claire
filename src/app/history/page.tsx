@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Star, Trash2, Clock, ChevronDown, ChevronUp, Shield } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";

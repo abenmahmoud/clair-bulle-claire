@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { RotateCcw, Bookmark } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import BottomNav from "@/components/layout/BottomNav";
@@ -10,7 +9,7 @@ import ResponseVariantCard from "@/components/ui/ResponseVariantCard";
 import Toast from "@/components/ui/Toast";
 import { generateResponses } from "@/lib/analysis";
 import { saveAnalysis } from "@/lib/storage";
-import { ContextType, ResponseVariant } from "@/types";
+import { AnalysisResult, ContextType, ResponseVariant } from "@/types";
 
 const toneOptions: { value: ResponseVariant; label: string; color: string; bgColor: string }[] = [
   { value: "short", label: "Court", color: "#5B9279", bgColor: "#E8F5EE" },
@@ -22,7 +21,6 @@ const toneOptions: { value: ResponseVariant; label: string; color: string; bgCol
 ];
 
 export default function RespondContent() {
-  const router = useRouter();
   const [text, setText] = useState("");
   const [context, setContext] = useState<ContextType>("inconnu");
   const [selectedTones, setSelectedTones] = useState<ResponseVariant[]>([
@@ -51,14 +49,34 @@ export default function RespondContent() {
     setSelectedTones(["short", "direct", "soft"]);
   }, []);
 
-  const handleSave = useCallback(() => {
-    if (!responses) return;
-    showToast("Réponses sauvegardées");
-  }, [responses]);
-
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
   }, []);
+
+  const handleSave = useCallback(() => {
+    if (!responses) return;
+    const firstResponse = Object.values(responses)[0] || "";
+    const result: AnalysisResult = {
+      original: text,
+      clearTranslation: firstResponse,
+      literalMeaning: "Demande de reformulation sociale.",
+      possibleSocialMeaning: "L'utilisateur cherche une formulation plus claire ou mieux reçue.",
+      certain: ["L'utilisateur veut répondre avec un ton adapté."],
+      uncertain: ["Le contexte exact et la réaction de l'autre personne restent inconnus."],
+      hypotheses: [],
+      clarifyingQuestion: "Quel ton veux-tu garder dans ta réponse ?",
+      shortAnswer: responses.short || firstResponse,
+      directAnswer: responses.direct || firstResponse,
+      softAnswer: responses.soft || firstResponse,
+      professionalAnswer: responses.professional || firstResponse,
+      boundaryAnswer: responses.boundary || firstResponse,
+      childVersion: responses.child,
+      voiceShortVersion: responses.short || firstResponse,
+      selfRegulationTip: "Tu peux relire la réponse une fois avant de l'envoyer.",
+    };
+    saveAnalysis(text, result, "neuroatypique-neurotypique", context);
+    showToast("Réponses sauvegardées");
+  }, [context, responses, showToast, text]);
 
   const isValid = text.trim().length > 0 && selectedTones.length > 0;
 
