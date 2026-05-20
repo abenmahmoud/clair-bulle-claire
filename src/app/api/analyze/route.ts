@@ -28,6 +28,7 @@ export async function POST(request: Request) {
         result: analyzeText(input.text, input.direction, input.context),
         demo: true,
         provider: "mock",
+        source: "fallback_scenario",
       });
     }
 
@@ -38,6 +39,7 @@ export async function POST(request: Request) {
         demo: false,
         provider: provider.name,
         model: provider.model,
+        source: "ai",
       });
     } catch (error) {
       console.error("[api/analyze] fallback mock", error);
@@ -45,6 +47,7 @@ export async function POST(request: Request) {
         result: analyzeText(input.text, input.direction, input.context),
         demo: true,
         provider: provider.name,
+        source: "fallback_scenario",
         error: "Le fournisseur IA n'a pas repondu correctement. Fallback mock utilise.",
       });
     }
