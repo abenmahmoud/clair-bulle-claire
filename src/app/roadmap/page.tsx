@@ -29,15 +29,15 @@ const SPRINTS: Sprint[] = [
     title: "Performance + PWA propre",
     description:
       "Chargement plus rapide, installation propre sur iOS et Android, plus de features fantômes.",
-    status: "current",
+    status: "done",
     category: "Fondations",
   },
   {
     num: 3,
     title: "Compte et historique multi-appareils",
     description:
-      "Retrouver tes analyses sur tous tes appareils, suppression complète RGPD.",
-    status: "planned",
+      "Connexion par lien magique, historique synchronisé sur tous tes appareils, suppression complète RGPD.",
+    status: "done",
     category: "Crédibilité",
   },
   {
@@ -60,7 +60,7 @@ const SPRINTS: Sprint[] = [
     num: 6,
     title: "Tests automatisés et monitoring",
     description: "Couverture de tests, détection automatique des bugs en production.",
-    status: "planned",
+    status: "current",
     category: "Crédibilité",
   },
   {
