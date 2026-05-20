@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Briefcase, FileText, Heart, Home, School, Users } from "lucide-react";
 import { SCENARIOS } from "@/data/scenarios";
-import type { ScenarioCategory } from "@/types/scenarios";
+import type { ScenarioCategory, ScenarioMode } from "@/types/scenarios";
 
 export const metadata: Metadata = {
   title: "Scénarios — Clair",
@@ -24,14 +24,30 @@ const CATEGORY_META: Record<
 };
 
 const AGE_FILTERS = [
-  { label: "Tous", href: "/scenarios", age: null },
-  { label: "Enfant (8-13)", href: "/scenarios?age=10", age: 10 },
-  { label: "Adolescent (14-17)", href: "/scenarios?age=15", age: 15 },
-  { label: "Adulte (18+)", href: "/scenarios?age=18", age: 18 },
+  { label: "Tous", age: null },
+  { label: "Enfant (8-13)", age: 10 },
+  { label: "Adolescent (14-17)", age: 15 },
+  { label: "Adulte (18+)", age: 18 },
+] as const;
+
+const MODE_FILTERS = [
+  { label: "Tous les modes", mode: null },
+  { label: "Adulte", mode: "adulte" as const },
+  { label: "Bulle Claire (enfant)", mode: "bulle-claire" as const },
 ] as const;
 
 interface PageProps {
-  searchParams?: Promise<{ age?: string }>;
+  searchParams?: Promise<{ age?: string; mode?: string }>;
+}
+
+function buildHref(base: { age?: number | null; mode?: string | null }): string {
+  const params = new URLSearchParams();
+  if (base.age !== null && base.age !== undefined) {
+    params.set("age", String(base.age));
+  }
+  if (base.mode) params.set("mode", base.mode);
+  const queryString = params.toString();
+  return queryString ? `/scenarios?${queryString}` : "/scenarios";
 }
 
 export default async function ScenariosPage({ searchParams }: PageProps) {
@@ -39,13 +55,17 @@ export default async function ScenariosPage({ searchParams }: PageProps) {
   const ageParam = params?.age ? Number(params.age) : null;
   const selectedAge =
     typeof ageParam === "number" && Number.isFinite(ageParam) ? ageParam : null;
+  const modeParam = params?.mode;
+  const selectedMode: ScenarioMode | null =
+    modeParam === "adulte" || modeParam === "bulle-claire" ? modeParam : null;
   const filteredScenarios =
-    selectedAge === null
-      ? SCENARIOS
-      : SCENARIOS.filter(
-          (scenario) =>
-            scenario.ageMin <= selectedAge && selectedAge <= scenario.ageMax
-        );
+    SCENARIOS.filter((scenario) => {
+      const ageMatches =
+        selectedAge === null ||
+        (scenario.ageMin <= selectedAge && selectedAge <= scenario.ageMax);
+      const modeMatches = selectedMode === null || scenario.mode === selectedMode;
+      return ageMatches && modeMatches;
+    });
 
   const byCategory = (Object.keys(CATEGORY_META) as ScenarioCategory[]).map(
     (category) => ({
@@ -73,10 +93,28 @@ export default async function ScenariosPage({ searchParams }: PageProps) {
             return (
               <Link
                 key={filter.label}
-                href={filter.href}
+                href={buildHref({ age: filter.age, mode: selectedMode })}
                 className={`rounded-full border px-3 py-1.5 text-xs font-medium ${
                   active
                     ? "border-[#3563E9] bg-[#EDF4FF] text-[#3563E9]"
+                    : "border-[#E2E0D9] bg-white text-[#475569]"
+                }`}
+              >
+                {filter.label}
+              </Link>
+            );
+          })}
+        </nav>
+        <nav className="mt-3 flex flex-wrap gap-2" aria-label="Filtrer par mode">
+          {MODE_FILTERS.map((filter) => {
+            const active = selectedMode === filter.mode;
+            return (
+              <Link
+                key={filter.label}
+                href={buildHref({ age: selectedAge, mode: filter.mode })}
+                className={`rounded-full border px-3 py-1.5 text-xs font-medium ${
+                  active
+                    ? "border-[#E67E22] bg-[#FFF3E0] text-[#9A3412]"
                     : "border-[#E2E0D9] bg-white text-[#475569]"
                 }`}
               >

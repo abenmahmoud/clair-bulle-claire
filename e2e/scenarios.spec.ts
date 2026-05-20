@@ -45,4 +45,32 @@ test.describe("Bibliothèque de scénarios", () => {
     const banners = page.locator("aside[aria-label='Information de soutien']");
     expect(await banners.count()).toBe(0);
   });
+
+  test("filtre Bulle Claire affiche au moins 10 scénarios enfant", async ({
+    page,
+  }) => {
+    await page.goto("/scenarios?mode=bulle-claire");
+    const scenarioLinks = page.locator('a[href^="/scenarios/bc-"]');
+    expect(await scenarioLinks.count()).toBeGreaterThanOrEqual(10);
+  });
+
+  test("scénario Bulle Claire affiche le badge mode enfant", async ({ page }) => {
+    await page.goto("/scenarios/bc-cantine-personne-veut-asseoir");
+    await expect(page.locator("body")).toContainText(/Mode enfant|Bulle Claire/i);
+  });
+
+  test("scénario du secret oriente vers un adulte dans la page détail", async ({
+    page,
+  }) => {
+    await page.goto("/scenarios/bc-secret-camarade-malaise");
+    await expect(page.locator("body")).toContainText(
+      /adulte|parent|ma[îi]tre|ma[îi]tresse/i
+    );
+  });
+
+  test("filtres mode et age combinables", async ({ page }) => {
+    await page.goto("/scenarios?mode=bulle-claire&age=10");
+    const scenarioLinks = page.locator('a[href^="/scenarios/bc-"]');
+    expect(await scenarioLinks.count()).toBeGreaterThan(0);
+  });
 });

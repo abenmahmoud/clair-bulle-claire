@@ -10,6 +10,8 @@ export type ScenarioCategory =
 
 export type SensitivityLevel = "standard" | "sensible" | "tres-sensible";
 
+export type ScenarioMode = "adulte" | "bulle-claire";
+
 export interface Scenario {
   id: string;
   title: string;
@@ -23,4 +25,5 @@ export interface Scenario {
   ageMin: number;
   ageMax: number;
   sensitive: SensitivityLevel;
+  mode: ScenarioMode;
 }
