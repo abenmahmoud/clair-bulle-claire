@@ -3,10 +3,12 @@
 import { Suspense, useCallback, useState } from "react";
 import { Bookmark, Check, Loader2, Mic, RotateCcw, Wand2 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
+import { DistressOverlay } from "@/components/DistressOverlay";
 import ContextPicker from "@/components/ui/ContextPicker";
 import ResponseVariantCard from "@/components/ui/ResponseVariantCard";
 import Toast from "@/components/ui/Toast";
 import { generateResponsesWithAI } from "@/lib/ai-client";
+import { detectDistress } from "@/lib/distress-detection";
 import { saveAnalysis } from "@/lib/storage";
 import type { AnalysisResult, ContextType, ResponseVariant } from "@/types";
 
@@ -35,6 +37,7 @@ function RespondContent() {
   const [responses, setResponses] = useState<Record<ResponseVariant, string> | null>(null);
   const [demoMode, setDemoMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showDistress, setShowDistress] = useState(false);
   const [toast, setToast] = useState({ message: "", visible: false });
 
   const toggleTone = (tone: ResponseVariant) => {
@@ -47,7 +50,7 @@ function RespondContent() {
     setToast({ message, visible: true });
   }, []);
 
-  const handleGenerate = useCallback(() => {
+  const runGenerate = useCallback(() => {
     if (!text.trim() || selectedTones.length === 0) return;
 
     setIsLoading(true);
@@ -61,6 +64,15 @@ function RespondContent() {
       setIsLoading(false);
     });
   }, [context, selectedTones, text]);
+
+  const handleGenerate = useCallback(() => {
+    if (detectDistress(text)) {
+      setShowDistress(true);
+      return;
+    }
+
+    runGenerate();
+  }, [runGenerate, text]);
 
   const handleRestart = useCallback(() => {
     setText("");
@@ -96,6 +108,17 @@ function RespondContent() {
   }, [context, responses, showToast, text]);
 
   const isValid = text.trim().length > 0 && selectedTones.length > 0 && !isLoading;
+
+  if (showDistress) {
+    return (
+      <DistressOverlay
+        onContinue={() => {
+          setShowDistress(false);
+          runGenerate();
+        }}
+      />
+    );
+  }
 
   return (
     <AppShell>
