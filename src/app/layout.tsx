@@ -10,17 +10,54 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Clair — Clarification sociale",
-  description: "Traduis l'implicite social en langage clair",
+  metadataBase: new URL("https://clair-bulle-claire.vercel.app"),
+  title: {
+    default: "Clair — Clarification sociale",
+    template: "%s",
+  },
+  description:
+    "Traduis l'implicite social en langage clair, prudent et utilisable. Pour personnes neuroatypiques, parents, AESH.",
+  applicationName: "Clair",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
     title: "Clair",
+    statusBarStyle: "default",
   },
   icons: {
-    icon: "/icons/icon-192.png",
-    apple: "/icons/icon-192.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "256x256", type: "image/x-icon" },
+      { url: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+  openGraph: {
+    type: "website",
+    locale: "fr_FR",
+    url: "https://clair-bulle-claire.vercel.app",
+    siteName: "Clair",
+    title: "Clair — Clarification sociale et cognitive",
+    description: "Traduis l'implicite social en langage clair, prudent et utilisable.",
+    images: [
+      {
+        url: "/og/cover.png",
+        width: 1200,
+        height: 630,
+        alt: "Clair — Clarification sociale et cognitive",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Clair — Clarification sociale",
+    description: "Traduis l'implicite social en langage clair, prudent et utilisable.",
+    images: ["/og/cover.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
