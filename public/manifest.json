@@ -1,22 +1,86 @@
 {
-  "name": "Clair \u2014 Clarification sociale",
+  "name": "Clair — Clarification sociale",
   "short_name": "Clair",
-  "description": "Traduis l'implicite social en langage clair",
+  "description": "Traduis l'implicite social en langage clair, prudent et utilisable.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#F8F6F0",
   "theme_color": "#3563E9",
   "orientation": "portrait",
+  "lang": "fr",
+  "categories": ["education", "health", "accessibility", "utilities"],
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home-mobile.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Page d'accueil de Clair"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Clarifier une phrase",
+      "short_name": "Clarifier",
+      "url": "/clarify",
+      "icons": [
+        {
+          "src": "/icons/shortcut-clarify.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Mode enfant",
+      "short_name": "Bulle Claire",
+      "url": "/child",
+      "icons": [
+        {
+          "src": "/icons/shortcut-child.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Urgences",
+      "short_name": "Urgence",
+      "url": "/urgence",
+      "icons": [
+        {
+          "src": "/icons/shortcut-urgent.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
     }
   ]
 }
