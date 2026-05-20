@@ -46,6 +46,10 @@ export default function PrivacyPage() {
             Aucune donnée personnelle (nom, email, géolocalisation) n&apos;est collectée
             par Clair.
           </p>
+          <p className="text-sm mt-2">
+            Vos analyses sont anonymisées avant traitement IA. Les résultats
+            peuvent être mis en cache pour améliorer la rapidité du service.
+          </p>
         </section>
 
         <section>

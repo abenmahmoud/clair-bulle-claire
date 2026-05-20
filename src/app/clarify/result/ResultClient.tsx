@@ -18,6 +18,7 @@ import HypothesisCard from "@/components/ui/HypothesisCard";
 import ResponseVariantCard from "@/components/ui/ResponseVariantCard";
 import Toast from "@/components/ui/Toast";
 import { analyzeWithAI } from "@/lib/ai-client";
+import type { AnalysisSource } from "@/lib/ai-client";
 import { detectDistress } from "@/lib/distress-detection";
 import { saveAnalysis } from "@/lib/storage";
 import type {
@@ -49,6 +50,17 @@ function getToneText(result: AnalysisResult, tone: ToneKey): string | undefined 
   };
 
   return values[tone];
+}
+
+function getSourceLabel(source: AnalysisSource): string {
+  const labels: Record<AnalysisSource, string> = {
+    scenario: "✓ Exemple validé cliniquement",
+    cache: "✓ Analyse partagée d'un autre utilisateur",
+    ai: "✨ Analyse personnalisée",
+    fallback_scenario: "↪ Exemple proche disponible",
+  };
+
+  return labels[source];
 }
 
 function ToneResponseSection({ result }: { result: AnalysisResult }) {
@@ -108,6 +120,7 @@ export function ResultClient() {
 
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [demoMode, setDemoMode] = useState(false);
+  const [source, setSource] = useState<AnalysisSource | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("essential");
   const [toast, setToast] = useState({ message: "", visible: false });
   const [saved, setSaved] = useState(false);
@@ -122,6 +135,7 @@ export function ResultClient() {
       if (cancelled) return;
       setResult(payload.result);
       setDemoMode(payload.demo);
+      setSource(payload.source ?? (payload.demo ? "fallback_scenario" : "ai"));
     });
 
     return () => {
@@ -273,6 +287,9 @@ export function ResultClient() {
           <div className="rounded-2xl border border-[#3563E9]/10 bg-[#EFF3FE] p-4">
             <p className="mb-1 text-xs font-medium text-[#3563E9]">Phrase analysée</p>
             <p className="text-base font-medium text-[#1E293B]">&ldquo;{text}&rdquo;</p>
+            {source ? (
+              <div className="mt-2 text-xs text-[#94A3B8]">{getSourceLabel(source)}</div>
+            ) : null}
           </div>
 
           {demoMode && (
