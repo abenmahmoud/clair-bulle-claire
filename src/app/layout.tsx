@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/layout/BottomNav";
@@ -78,6 +79,7 @@ export default function RootLayout({
         {children}
         <SiteFooter />
         <BottomNav />
+        <Analytics />
       </body>
     </html>
   );
