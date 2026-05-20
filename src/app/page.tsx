@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import {
   Search,
   MessageSquare,
-  Mic,
   Heart,
   Users,
   Clock,
@@ -27,13 +26,6 @@ const MODES = [
     icon: MessageSquare,
     color: "#2E7D5A",
     bgColor: "#E8F5EE",
-  },
-  {
-    title: "Parler / dicter",
-    description: "Utiliser le microphone (bientôt)",
-    icon: Mic,
-    color: "#E67E22",
-    bgColor: "#FFF3E0",
   },
   {
     title: "Mode enfant",
@@ -109,10 +101,9 @@ export default function HomePage() {
           const Icon = mode.icon;
           let target = "/clarify";
           if (i === 1) target = "/respond";
-          if (i === 2) target = "/clarify?voice=1";
-          if (i === 3) target = "/child";
-          if (i === 4) target = "/educator";
-          if (i === 5) target = "/history";
+          if (i === 2) target = "/child";
+          if (i === 3) target = "/educator";
+          if (i === 4) target = "/history";
 
           return (
             <ModeCard

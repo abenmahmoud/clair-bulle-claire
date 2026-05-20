@@ -15,9 +15,9 @@ const variantConfig: Record<
   short: { label: "Courte", color: "#5B9279", bgColor: "#E8F5EE" },
   direct: { label: "Directe", color: "#3563E9", bgColor: "#EFF3FE" },
   soft: { label: "Douce", color: "#E07A5F", bgColor: "#FDF1EE" },
-  professional: { label: "Professionnelle", color: "#64748B", bgColor: "#F1F5F9" },
-  boundary: { label: "Avec limite", color: "#C2413A", bgColor: "#FDF0EF" },
-  child: { label: "Pour enfant", color: "#9B8EC4", bgColor: "#F3F1F9" },
+  professional: { label: "Pro", color: "#64748B", bgColor: "#F1F5F9" },
+  boundary: { label: "Avec une limite", color: "#C2413A", bgColor: "#FDF0EF" },
+  child: { label: "Pour un enfant", color: "#9B8EC4", bgColor: "#F3F1F9" },
 };
 
 export default function ResponseVariantCard({
