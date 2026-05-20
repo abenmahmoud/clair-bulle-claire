@@ -40,6 +40,10 @@ export default async function ScenarioDetailPage({ params }: PageProps) {
         Tous les scénarios
       </Link>
 
+      {scenario.sensitive !== "standard" ? (
+        <UrgencyBanner level={scenario.sensitive} />
+      ) : null}
+
       <header className="mt-4">
         <span className="inline-block rounded-full bg-[#F1F5F9] px-2 py-0.5 text-xs font-medium uppercase tracking-wider text-[#64748B]">
           {scenario.category}
@@ -169,5 +173,32 @@ function ResponseCard({ label, content }: { label: string; content: string }) {
       </div>
       <p className="mt-1 text-sm text-[#1E293B]">{content}</p>
     </div>
+  );
+}
+
+function UrgencyBanner({ level }: { level: "sensible" | "tres-sensible" }) {
+  const isVeryHigh = level === "tres-sensible";
+
+  return (
+    <aside
+      className={`mt-3 rounded-2xl border p-3 text-xs ${
+        isVeryHigh
+          ? "border-[#C44569]/40 bg-[#FFF0F3] text-[#7A1F35]"
+          : "border-[#E6A93C]/40 bg-[#FFF8E8] text-[#7C5F1F]"
+      }`}
+      aria-label="Information de soutien"
+    >
+      <p className="font-semibold">
+        Si cette situation te touche personnellement, tu n&apos;es pas seul·e.
+      </p>
+      <p className="mt-1">
+        Tu peux appeler le 3018 (cyberharcèlement, lun-ven 9h-23h), le 119
+        (enfance en danger, 24/7) ou le 3114 (prévention du suicide, 24/7). Ces
+        numéros sont gratuits et confidentiels.
+      </p>
+      <Link href="/urgence" className="mt-2 inline-block font-medium underline">
+        Voir toutes les ressources
+      </Link>
+    </aside>
   );
 }

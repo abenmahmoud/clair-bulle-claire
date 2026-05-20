@@ -64,6 +64,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "travail-manager-faut-quon-en-parle",
@@ -121,6 +124,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "travail-slack-silence-deux-jours",
@@ -178,6 +184,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "travail-email-passer-me-voir",
@@ -235,6 +244,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "famille-parent-tu-es-toujours-comme-ca",
@@ -292,6 +304,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 14,
+    ageMax: 99,
+    sensitive: "sensible",
   },
   {
     id: "famille-conjoint-jamais-rien-maison",
@@ -349,6 +364,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "sensible",
   },
   {
     id: "famille-ado-silence-journee",
@@ -406,6 +424,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "famille-parent-appelle-moi",
@@ -463,6 +484,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 14,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "couple-ca-va-ton-plat",
@@ -520,6 +544,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 16,
+    ageMax: 99,
+    sensitive: "sensible",
   },
   {
     id: "couple-message-amour-reponse-tardive",
@@ -577,6 +604,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 16,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "couple-tu-es-bizarre-quand-tu-fais-ca",
@@ -634,6 +664,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 16,
+    ageMax: 99,
+    sensitive: "sensible",
   },
   {
     id: "amitie-annulation-troisieme-fois",
@@ -691,6 +724,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 14,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "amitie-on-se-voit-bientot",
@@ -748,6 +784,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 14,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "amitie-vocal-sans-reponse",
@@ -805,6 +844,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 14,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "ecole-tout-le-monde-a-compris",
@@ -862,6 +904,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 8,
+    ageMax: 18,
+    sensitive: "sensible",
   },
   {
     id: "ecole-aesh-tu-vas-y-arriver",
@@ -919,6 +964,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "ecole-camarade-tes-chelou",
@@ -976,6 +1024,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 8,
+    ageMax: 15,
+    sensitive: "tres-sensible",
   },
   {
     id: "administration-caf-pieces-huitaine",
@@ -1033,6 +1084,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "standard",
   },
   {
     id: "administration-medecin-voir-evolution",
@@ -1090,6 +1144,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "sensible",
   },
   {
     id: "administration-banquier-etudier-dossier",
@@ -1147,6 +1204,9 @@ export const SCENARIOS: Scenario[] = [
     },
     reviewedBy: "brouillon",
     addedAt: ADDED_AT,
+    ageMin: 18,
+    ageMax: 99,
+    sensitive: "standard",
   },
 ];
 
