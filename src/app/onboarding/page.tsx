@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import AppShell from "@/components/layout/AppShell";
+import { hasSupabaseConfig } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { OnboardingForm } from "./OnboardingForm";
 
@@ -9,6 +10,8 @@ export const metadata = {
 };
 
 export default async function OnboardingPage() {
+  if (!hasSupabaseConfig()) redirect("/login?error=supabase_config");
+
   const supabase = await createClient();
   const {
     data: { user },

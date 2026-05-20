@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Loader2, Mail } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { hasSupabaseConfig } from "@/lib/supabase/config";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -22,6 +23,14 @@ export function LoginForm() {
 
     setStatus("sending");
     setErrorMessage("");
+
+    if (!hasSupabaseConfig()) {
+      setStatus("error");
+      setErrorMessage(
+        "La connexion sera disponible dès que Supabase sera configuré pour ce déploiement."
+      );
+      return;
+    }
 
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({

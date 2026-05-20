@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { hasSupabaseConfig } from "@/lib/supabase/config";
 
 type Role =
   | "parent"
@@ -57,6 +58,11 @@ export function OnboardingForm() {
     if (!role) return;
     setSubmitting(true);
 
+    if (!hasSupabaseConfig()) {
+      router.push("/login?error=supabase_config");
+      return;
+    }
+
     const supabase = createClient();
     const {
       data: { user },
@@ -67,7 +73,7 @@ export function OnboardingForm() {
       return;
     }
 
-    await supabase.from("profiles").update({ role }).eq("id", user.id);
+    await supabase.from("profiles").upsert({ id: user.id, role });
 
     setShowConfirm(true);
     window.setTimeout(() => router.push(next), 2500);
