@@ -8,6 +8,7 @@ import {
   Users,
   Clock,
   Lock,
+  BookOpen,
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import ModeCard from "@/components/ui/ModeCard";
@@ -47,6 +48,13 @@ const MODES = [
     icon: Clock,
     color: "#7B1FA2",
     bgColor: "#F3F1F9",
+  },
+  {
+    title: "Scénarios",
+    description: "Exemples concrets déjà clarifiés",
+    icon: BookOpen,
+    color: "#5C7894",
+    bgColor: "#EEF4F7",
   },
 ];
 
@@ -106,6 +114,7 @@ export default function HomePage() {
             if (i === 2) target = "/child";
             if (i === 3) target = "/educator";
             if (i === 4) target = "/history";
+            if (i === 5) target = "/scenarios";
 
             return (
               <ModeCard

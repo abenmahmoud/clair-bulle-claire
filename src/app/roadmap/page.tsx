@@ -60,7 +60,7 @@ const SPRINTS: Sprint[] = [
     num: 6,
     title: "Tests automatisés et monitoring",
     description: "Couverture de tests, détection automatique des bugs en production.",
-    status: "current",
+    status: "done",
     category: "Crédibilité",
   },
   {
@@ -68,7 +68,7 @@ const SPRINTS: Sprint[] = [
     title: "Bibliothèque de 50+ scénarios validés",
     description:
       "Scénarios sociaux validés par des professionnels (cantine, récréation, transitions, émotions complexes).",
-    status: "planned",
+    status: "current",
     category: "Profondeur",
   },
   {
