@@ -33,6 +33,13 @@ export function SiteFooter() {
         </Link>
         <span>·</span>
         <Link
+          href="/parametres"
+          className="inline-flex min-h-6 items-center px-1 hover:text-[#3563E9] hover:underline"
+        >
+          Paramètres
+        </Link>
+        <span>·</span>
+        <Link
           href="/urgence"
           className="inline-flex min-h-6 items-center px-1 font-semibold hover:text-[#E07A5F] hover:underline"
         >
