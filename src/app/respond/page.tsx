@@ -1,277 +1,247 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import {
-  ArrowLeft,
-  Mic,
-  Wand2,
-  Loader2,
-  RotateCcw,
-  Bookmark,
-  Check,
-} from "lucide-react";
-import Link from "next/link";
+import { Suspense, useCallback, useState } from "react";
+import { Bookmark, Check, Loader2, Mic, RotateCcw, Wand2 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
-import ResponseVariantCard from "@/components/ui/ResponseVariantCard";
 import ContextPicker from "@/components/ui/ContextPicker";
+import ResponseVariantCard from "@/components/ui/ResponseVariantCard";
 import Toast from "@/components/ui/Toast";
-import { generateResponses } from "@/lib/analysis";
+import { generateResponsesWithAI } from "@/lib/ai-client";
 import { saveAnalysis } from "@/lib/storage";
-import type { ContextType, ResponseVariant } from "@/types";
+import type { AnalysisResult, ContextType, ResponseVariant } from "@/types";
 
-const TONES: { key: ResponseVariant; label: string; color: string }[] = [
-  { key: "short", label: "Courte", color: "#3563E9" },
-  { key: "direct", label: "Directe", color: "#2E7D5A" },
-  { key: "soft", label: "Douce", color: "#E07A5F" },
-  { key: "professional", label: "Professionnelle", color: "#64748B" },
-  { key: "boundary", label: "Avec limite", color: "#C2413A" },
-  { key: "child", label: "Enfant", color: "#9B8EC4" },
-];
-
-const EXAMPLES = [
-  "Dire non à une invitation",
-  "Demander de l'aide au travail",
-  "Exprimer un désaccord",
-  "Demander un délai",
-  "Répondre à un message flou",
+const toneOptions: {
+  value: ResponseVariant;
+  label: string;
+  color: string;
+  bgColor: string;
+}[] = [
+  { value: "short", label: "Courte", color: "#5B9279", bgColor: "#E8F5EE" },
+  { value: "direct", label: "Directe", color: "#3563E9", bgColor: "#EFF3FE" },
+  { value: "soft", label: "Douce", color: "#E07A5F", bgColor: "#FDF1EE" },
+  { value: "professional", label: "Professionnelle", color: "#64748B", bgColor: "#F1F5F9" },
+  { value: "boundary", label: "Avec limite", color: "#C2413A", bgColor: "#FDF0EF" },
+  { value: "child", label: "Pour enfant", color: "#9B8EC4", bgColor: "#F3F1F9" },
 ];
 
 function RespondContent() {
-  const searchParams = useSearchParams();
-  const initialText = searchParams.get("text") || "";
-
-  const [inputText, setInputText] = useState(initialText);
+  const [text, setText] = useState("");
   const [context, setContext] = useState<ContextType>("inconnu");
-  const [selectedTones, setSelectedTones] = useState<ResponseVariant[]>(
-    TONES.map((t) => t.key)
-  );
-  const [responses, setResponses] = useState<Record<string, string> | null>(
-    null
-  );
+  const [selectedTones, setSelectedTones] = useState<ResponseVariant[]>([
+    "short",
+    "direct",
+    "soft",
+  ]);
+  const [responses, setResponses] = useState<Record<ResponseVariant, string> | null>(null);
+  const [demoMode, setDemoMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [saved, setSaved] = useState(false);
   const [toast, setToast] = useState({ message: "", visible: false });
 
-  const toggleTone = (key: ResponseVariant) => {
+  const toggleTone = (tone: ResponseVariant) => {
     setSelectedTones((prev) =>
-      prev.includes(key)
-        ? prev.length > 1
-          ? prev.filter((k) => k !== key)
-          : prev
-        : [...prev, key]
+      prev.includes(tone) ? prev.filter((item) => item !== tone) : [...prev, tone]
     );
   };
 
-  const handleGenerate = () => {
-    if (!inputText.trim()) return;
-    setIsLoading(true);
-    setSaved(false);
-    setTimeout(() => {
-      const allResponses = generateResponses(inputText, context);
-      const filtered: Record<string, string> = {};
-      selectedTones.forEach((t) => {
-        if (allResponses[t]) filtered[t] = allResponses[t];
-      });
-      setResponses(filtered);
-      setIsLoading(false);
-    }, 800);
-  };
+  const showToast = useCallback((message: string) => {
+    setToast({ message, visible: true });
+  }, []);
 
-  const handleSave = () => {
-    if (responses && inputText) {
-      const result = {
-        original: inputText,
-        clearTranslation: "",
-        literalMeaning: "",
-        possibleSocialMeaning: "",
-        certain: [],
-        uncertain: [],
-        hypotheses: [],
-        clarifyingQuestion: "",
-        shortAnswer: responses["short"] || "",
-        directAnswer: responses["direct"] || "",
-        softAnswer: responses["soft"] || "",
-        professionalAnswer: responses["professional"] || "",
-        boundaryAnswer: responses["boundary"] || "",
-        childVersion: responses["child"] || undefined,
-        voiceShortVersion: "",
-      };
-      saveAnalysis(inputText, result, "neuroatypique-neurotypique", context);
-      setSaved(true);
-      setToast({ message: "Réponses sauvegardées", visible: true });
-    }
-  };
+  const handleGenerate = useCallback(() => {
+    if (!text.trim() || selectedTones.length === 0) return;
+
+    setIsLoading(true);
+    void generateResponsesWithAI({
+      text: text.trim(),
+      context,
+      tones: selectedTones,
+    }).then((payload) => {
+      setResponses(payload.responses);
+      setDemoMode(payload.demo);
+      setIsLoading(false);
+    });
+  }, [context, selectedTones, text]);
+
+  const handleRestart = useCallback(() => {
+    setText("");
+    setResponses(null);
+    setContext("inconnu");
+    setSelectedTones(["short", "direct", "soft"]);
+    setDemoMode(false);
+  }, []);
+
+  const handleSave = useCallback(() => {
+    if (!responses) return;
+    const firstResponse = Object.values(responses)[0] || "";
+    const result: AnalysisResult = {
+      original: text,
+      clearTranslation: firstResponse,
+      literalMeaning: "Demande de reformulation sociale.",
+      possibleSocialMeaning: "L'utilisateur cherche une formulation plus claire ou mieux reçue.",
+      certain: ["L'utilisateur veut répondre avec un ton adapté."],
+      uncertain: ["Le contexte exact et la réaction de l'autre personne restent inconnus."],
+      hypotheses: [],
+      clarifyingQuestion: "Quel ton veux-tu garder dans ta réponse ?",
+      shortAnswer: responses.short || firstResponse,
+      directAnswer: responses.direct || firstResponse,
+      softAnswer: responses.soft || firstResponse,
+      professionalAnswer: responses.professional || firstResponse,
+      boundaryAnswer: responses.boundary || firstResponse,
+      childVersion: responses.child,
+      voiceShortVersion: responses.short || firstResponse,
+      selfRegulationTip: "Tu peux relire la réponse une fois avant de l'envoyer.",
+    };
+    saveAnalysis(text, result, "neuroatypique-neurotypique", context);
+    showToast("Réponses sauvegardées");
+  }, [context, responses, showToast, text]);
+
+  const isValid = text.trim().length > 0 && selectedTones.length > 0 && !isLoading;
 
   return (
     <AppShell>
-      {/* Header */}
-      <div className="px-5 pt-4">
-        <Link
-          href="/"
-          className="mb-3 flex items-center gap-1 text-[14px] font-medium text-[#64748B]"
-        >
-          <ArrowLeft size={18} />
-          Retour
-        </Link>
-        <h1 className="text-[24px] font-bold text-[#1E293B]">
-          M&apos;aider à répondre
-        </h1>
-        <p className="mt-1 text-[15px] text-[#64748B]">
-          Écrivez ce que vous voulez dire, nous vous proposons des formulations.
-        </p>
-      </div>
-
-      {/* Textarea */}
-      <div className="mt-4 px-5">
-        <div className="relative rounded-2xl border border-[#E2E0D9] bg-white p-3">
-          <textarea
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="Ex: Je veux dire non à une invitation mais je ne sais pas comment..."
-            className="w-full resize-none border-0 bg-transparent text-[16px] leading-relaxed outline-none"
-            style={{ minHeight: 140, color: "#1E293B" }}
-            maxLength={500}
-          />
-          <button
-            className="absolute bottom-3 right-3 flex h-10 w-10 items-center justify-center rounded-full"
-            style={{ backgroundColor: "#EFF3FE", opacity: 0.4 }}
-            onClick={() =>
-              setToast({ message: "Mode vocal bientôt disponible", visible: true })
-            }
-          >
-            <div className="text-[#3563E9]">
-              <Mic size={18} />
-            </div>
-          </button>
-        </div>
-        <div className="mt-1 flex justify-end">
-          <span className="text-[12px] text-[#64748B]">
-            {inputText.length} / 500
-          </span>
-        </div>
-      </div>
-
-      {/* Context */}
-      <div className="mt-4 px-5">
-        <h2 className="text-[17px] font-semibold text-[#1E293B]">Contexte</h2>
-        <div className="mt-2">
-          <ContextPicker selected={context} onChange={setContext} />
-        </div>
-      </div>
-
-      {/* Tones */}
-      <div className="mt-4 px-5">
-        <h2 className="text-[17px] font-semibold text-[#1E293B]">
-          Tons souhaités
-        </h2>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {TONES.map((tone) => {
-            const isActive = selectedTones.includes(tone.key);
-            return (
-              <button
-                key={tone.key}
-                onClick={() => toggleTone(tone.key)}
-                className="flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[13px] font-medium transition-all active:scale-95"
-                style={{
-                  borderColor: isActive ? tone.color : "#E2E0D9",
-                  backgroundColor: isActive ? tone.color + "18" : "#FFFFFF",
-                  color: isActive ? tone.color : "#64748B",
-                }}
-              >
-                {isActive && <Check size={14} />}
-                {tone.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Examples */}
-      <div className="mt-3 px-5">
-        <p className="mb-2 text-[13px] font-medium text-[#64748B]">
-          Exemples :
-        </p>
-        <div className="scrollbar-none flex gap-2 overflow-x-auto pb-2">
-          {EXAMPLES.map((ex) => (
-            <button
-              key={ex}
-              onClick={() => setInputText(ex)}
-              className="whitespace-nowrap rounded-full border border-[#E2E0D9] bg-white px-3 py-1.5 text-[13px] font-medium text-[#64748B] transition-transform active:scale-95"
-            >
-              {ex}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Generate button */}
-      <div className="mt-4 px-5">
-        <button
-          onClick={handleGenerate}
-          disabled={!inputText.trim() || isLoading}
-          className="flex h-14 w-full items-center justify-center gap-2 rounded-2xl bg-[#5B9279] text-[16px] font-semibold text-white transition-all active:scale-[0.98] disabled:opacity-40"
-        >
-          {isLoading ? (
-            <>
-              <Loader2 size={20} className="animate-spin" />
-              Réflexion en cours...
-            </>
-          ) : (
-            <>
-              <Wand2 size={20} />
-              Proposer des versions
-            </>
-          )}
-        </button>
-      </div>
-
-      {/* Results */}
-      {responses && (
-        <div className="mt-4 space-y-2 px-5 pb-6">
-          <h3 className="text-[17px] font-semibold text-[#1E293B]">
-            Réponses proposées
-          </h3>
-          {Object.entries(responses).map(([key, text]) => {
-            return (
-              <ResponseVariantCard
-                key={key}
-                variant={key as ResponseVariant}
-                text={text}
-              />
-            );
-          })}
-
-          <div className="mt-3 flex gap-2">
-            <button
-              onClick={() => {
-                setResponses(null);
-                setInputText("");
-                setSaved(false);
-              }}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl border border-[#E2E0D9] py-3 text-[14px] font-medium text-[#1E293B]"
-            >
-              <RotateCcw size={16} />
-              Recommencer
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={saved}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-2xl py-3 text-[14px] font-semibold text-white disabled:opacity-50"
-              style={{ backgroundColor: saved ? "#5B9279" : "#3563E9" }}
-            >
-              <Bookmark size={16} />
-              {saved ? "Sauvegardé" : "Sauvegarder"}
-            </button>
-          </div>
-
-          {/* Disclaimer */}
-          <p className="text-[11px] text-[#64748B]">
-            Ces formulations sont des suggestions. Adaptez-les à votre situation
-            et votre relation avec la personne.
+      <main className="px-5 pt-6 pb-8">
+        <div className="mb-6">
+          <h1 className="text-xl font-bold text-[#1E293B] mb-1">
+            M&apos;aider à répondre
+          </h1>
+          <p className="text-sm text-[#64748B]">
+            Écris ce qu&apos;on t&apos;a dit, choisis un ton, et laisse-toi guider.
           </p>
         </div>
-      )}
+
+        <div className="mb-6">
+          <div className="relative">
+            <textarea
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              placeholder="Ex: 'Tu viens à la fête ce soir ?'"
+              maxLength={500}
+              className="w-full min-h-[100px] p-4 pr-12 bg-white border border-[#E2E0D9] rounded-2xl text-sm text-[#1E293B] placeholder:text-[#64748B]/60 focus:outline-none focus:border-[#3563E9] focus:ring-2 focus:ring-[#3563E9]/10 transition-all resize-none"
+            />
+            <button
+              type="button"
+              onClick={() => showToast("Mode vocal bientôt disponible")}
+              className="absolute bottom-3 right-3 w-8 h-8 flex items-center justify-center rounded-lg bg-[#F1F0EB] text-[#64748B] hover:bg-[#E2E0D9] transition-colors"
+              aria-label="Microphone (bientôt disponible)"
+            >
+              <Mic size={16} strokeWidth={1.5} />
+            </button>
+          </div>
+          <div className="text-right mt-1">
+            <span className="text-xs text-[#64748B]">{text.length}/500</span>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-[#1E293B] mb-3">Contexte</h2>
+          <ContextPicker selected={context} onChange={setContext} />
+        </div>
+
+        <div className="mb-6">
+          <h2 className="text-sm font-semibold text-[#1E293B] mb-3">Tons souhaités</h2>
+          <div className="flex flex-wrap gap-2">
+            {toneOptions.map((tone) => {
+              const isSelected = selectedTones.includes(tone.value);
+              return (
+                <button
+                  key={tone.value}
+                  type="button"
+                  onClick={() => toggleTone(tone.value)}
+                  className={`flex items-center gap-1.5 px-3.5 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                    isSelected
+                      ? "text-white shadow-sm"
+                      : "bg-white text-[#64748B] border border-[#E2E0D9] hover:border-[#3563E9] hover:text-[#3563E9]"
+                  }`}
+                  style={isSelected ? { backgroundColor: tone.color } : undefined}
+                >
+                  {isSelected && <Check size={14} strokeWidth={2} />}
+                  {tone.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {!responses && (
+          <div className="mb-6">
+            <button
+              type="button"
+              onClick={handleGenerate}
+              disabled={!isValid}
+              className={`w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-sm font-semibold shadow-lg transition-all duration-200 ${
+                isValid
+                  ? "bg-[#3563E9] text-white hover:bg-[#2547B3] active:scale-[0.98]"
+                  : "bg-[#E2E0D9] text-[#64748B] cursor-not-allowed"
+              }`}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 size={16} className="animate-spin" strokeWidth={2} />
+                  Génération en cours...
+                </>
+              ) : (
+                <>
+                  <Wand2 size={16} strokeWidth={1.5} />
+                  Générer des réponses
+                </>
+              )}
+            </button>
+          </div>
+        )}
+
+        {responses && (
+          <div className="mb-6">
+            {demoMode && (
+              <div className="mb-4 rounded-2xl border border-[#D4A017]/30 bg-[#FDF8E8] p-4">
+                <p className="text-xs font-semibold text-[#9A6B00]">Mode démo</p>
+                <p className="mt-1 text-xs text-[#64748B] leading-relaxed">
+                  Aucune clé IA serveur n&apos;est active ou le fournisseur a échoué. Clair affiche
+                  des réponses simulées.
+                </p>
+              </div>
+            )}
+
+            <h2 className="text-base font-semibold text-[#1E293B] mb-3">
+              Réponses proposées
+            </h2>
+            <div className="space-y-3">
+              {Object.entries(responses).map(([variant, responseText], i) => (
+                <div
+                  key={variant}
+                  className="animate-stagger"
+                  style={{ animationDelay: `${i * 0.05}s` }}
+                >
+                  <ResponseVariantCard
+                    variant={variant as ResponseVariant}
+                    text={responseText}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {responses && (
+          <div className="flex gap-3 pb-4">
+            <button
+              type="button"
+              onClick={handleSave}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-white border border-[#E2E0D9] rounded-2xl text-sm font-medium text-[#1E293B] hover:bg-[#F1F0EB] transition-colors"
+            >
+              <Bookmark size={16} strokeWidth={1.5} />
+              Sauvegarder
+            </button>
+            <button
+              type="button"
+              onClick={handleRestart}
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-white border border-[#E2E0D9] rounded-2xl text-sm font-medium text-[#1E293B] hover:bg-[#F1F0EB] transition-colors"
+            >
+              <RotateCcw size={16} strokeWidth={1.5} />
+              Recommencer
+            </button>
+          </div>
+        )}
+      </main>
 
       <Toast
         message={toast.message}
