@@ -67,6 +67,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "travail-manager-faut-quon-en-parle",
@@ -127,6 +128,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "travail-slack-silence-deux-jours",
@@ -187,6 +189,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "travail-email-passer-me-voir",
@@ -247,6 +250,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "famille-parent-tu-es-toujours-comme-ca",
@@ -307,6 +311,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 14,
     ageMax: 99,
     sensitive: "sensible",
+    mode: "adulte",
   },
   {
     id: "famille-conjoint-jamais-rien-maison",
@@ -367,6 +372,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "sensible",
+    mode: "adulte",
   },
   {
     id: "famille-ado-silence-journee",
@@ -427,6 +433,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "famille-parent-appelle-moi",
@@ -487,6 +494,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 14,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "couple-ca-va-ton-plat",
@@ -547,6 +555,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 16,
     ageMax: 99,
     sensitive: "sensible",
+    mode: "adulte",
   },
   {
     id: "couple-message-amour-reponse-tardive",
@@ -607,6 +616,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 16,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "couple-tu-es-bizarre-quand-tu-fais-ca",
@@ -667,6 +677,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 16,
     ageMax: 99,
     sensitive: "sensible",
+    mode: "adulte",
   },
   {
     id: "amitie-annulation-troisieme-fois",
@@ -727,6 +738,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 14,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "amitie-on-se-voit-bientot",
@@ -787,6 +799,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 14,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "amitie-vocal-sans-reponse",
@@ -847,6 +860,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 14,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "ecole-tout-le-monde-a-compris",
@@ -907,6 +921,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 8,
     ageMax: 18,
     sensitive: "sensible",
+    mode: "adulte",
   },
   {
     id: "ecole-aesh-tu-vas-y-arriver",
@@ -967,6 +982,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "ecole-camarade-tes-chelou",
@@ -1027,6 +1043,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 8,
     ageMax: 15,
     sensitive: "tres-sensible",
+    mode: "adulte",
   },
   {
     id: "administration-caf-pieces-huitaine",
@@ -1087,6 +1104,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
   },
   {
     id: "administration-medecin-voir-evolution",
@@ -1147,6 +1165,7 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "sensible",
+    mode: "adulte",
   },
   {
     id: "administration-banquier-etudier-dossier",
@@ -1207,6 +1226,557 @@ export const SCENARIOS: Scenario[] = [
     ageMin: 18,
     ageMax: 99,
     sensitive: "standard",
+    mode: "adulte",
+  },
+  {
+    id: "bc-cantine-personne-veut-asseoir",
+    title: "Personne ne veut s'asseoir à côté de moi à la cantine",
+    category: "ecole",
+    context: "ecole",
+    direction: "enfant-adulte",
+    inputText:
+      "À la cantine, j'ai posé mon plateau sur une table. Quand je suis revenu avec mon dessert, deux enfants étaient partis.",
+    result: {
+      original:
+        "À la cantine, j'ai posé mon plateau sur une table. Quand je suis revenu avec mon dessert, deux enfants étaient partis.",
+      clearTranslation:
+        "Tu t'es retrouvé seul à table. C'est triste. Ce n'est pas ta faute.",
+      literalMeaning:
+        "Les enfants sont partis de la table pendant que tu bougeais.",
+      possibleSocialMeaning:
+        "Parfois, les enfants changent de place. On ne sait pas pourquoi.",
+      certain: [
+        "Tu t'es retrouvé seul.",
+        "Deux enfants étaient là avant.",
+        "Tu n'as pas vu pourquoi ils sont partis.",
+      ],
+      uncertain: [
+        "Pourquoi les enfants sont partis.",
+        "Si c'est déjà arrivé avant.",
+        "Si un adulte a vu la scène.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : ils avaient fini de manger.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : ils ont rejoint des copains.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « Où puis-je m'asseoir demain ? »",
+      shortAnswer: "Je vais demander à un adulte où m'asseoir demain.",
+      directAnswer: "Je suis seul à table. Je vais voir un adulte.",
+      softAnswer: "J'ai besoin d'aide pour trouver une place.",
+      professionalAnswer:
+        "Conseil adulte : observer la cantine et proposer un binôme rassurant.",
+      boundaryAnswer:
+        "Si ça recommence, je vais voir un adulte de confiance.",
+      voiceShortVersion: "Je suis seul à table. Je vais voir un adulte.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "tres-sensible",
+    mode: "bulle-claire",
+  },
+  {
+    id: "bc-recre-on-ma-bouscule",
+    title: "On m'a bousculé à la récré et personne n'a vu",
+    category: "ecole",
+    context: "ecole",
+    direction: "enfant-adulte",
+    inputText:
+      "À la récré, un enfant m'a bousculé près du préau. Je suis tombé. Je crois qu'aucun adulte n'a vu.",
+    result: {
+      original:
+        "À la récré, un enfant m'a bousculé près du préau. Je suis tombé. Je crois qu'aucun adulte n'a vu.",
+      clearTranslation:
+        "Tu es tombé après une bousculade. Tu peux demander de l'aide.",
+      literalMeaning:
+        "Un enfant t'a touché fort. Tu es tombé au sol.",
+      possibleSocialMeaning:
+        "On ne sait pas si c'était exprès. Un adulte doit écouter.",
+      certain: [
+        "Tu as été bousculé.",
+        "Tu es tombé.",
+        "Tu penses qu'aucun adulte n'a vu.",
+      ],
+      uncertain: [
+        "Si l'enfant a fait exprès.",
+        "Si quelqu'un a vu la scène.",
+        "Si tu as mal quelque part.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : il courait trop vite.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : il n'a pas fait attention.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « Peux-tu m'aider à expliquer ? »",
+      shortAnswer: "Je suis tombé. Je vais voir un adulte.",
+      directAnswer: "On m'a bousculé. J'ai besoin d'aide.",
+      softAnswer: "Je vais expliquer calmement ce qui s'est passé.",
+      professionalAnswer:
+        "Conseil adulte : écouter l'enfant, noter le lieu, vérifier les blessures.",
+      boundaryAnswer:
+        "Si on me bouscule, je vais voir un adulte de confiance.",
+      voiceShortVersion: "On m'a bousculé. Je vais voir un adulte.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "tres-sensible",
+    mode: "bulle-claire",
+  },
+  {
+    id: "bc-prof-grondee-pas-su-pourquoi",
+    title: "La maîtresse m'a grondé et je n'ai pas compris pourquoi",
+    category: "ecole",
+    context: "ecole",
+    direction: "enfant-adulte",
+    inputText:
+      "La maîtresse m'a grondé devant la classe. Je n'ai pas compris ce que j'avais fait. J'ai eu très chaud.",
+    result: {
+      original:
+        "La maîtresse m'a grondé devant la classe. Je n'ai pas compris ce que j'avais fait. J'ai eu très chaud.",
+      clearTranslation:
+        "Tu as été grondé. Tu n'as pas compris la raison. C'est difficile.",
+      literalMeaning:
+        "La maîtresse a parlé fort ou fermement devant les autres.",
+      possibleSocialMeaning:
+        "Elle voulait peut-être arrêter quelque chose. Tu peux demander une explication.",
+      certain: [
+        "La maîtresse t'a grondé.",
+        "La classe était là.",
+        "Tu n'as pas compris pourquoi.",
+      ],
+      uncertain: [
+        "Ce que la maîtresse voulait corriger.",
+        "Si elle a vu toute la scène.",
+        "Si un adulte peut t'expliquer après.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : elle a vu une règle non respectée.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : elle voulait calmer la classe.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « Quelle règle je n'ai pas comprise ? »",
+      shortAnswer: "Je vais demander pourquoi j'ai été grondé.",
+      directAnswer: "Je n'ai pas compris. Je vais demander à un adulte.",
+      softAnswer: "J'ai besoin qu'on m'explique calmement.",
+      professionalAnswer:
+        "Conseil adulte : reformuler la règle avec une phrase courte.",
+      boundaryAnswer:
+        "Si je ne comprends pas, je vais voir un adulte de confiance.",
+      voiceShortVersion: "Je n'ai pas compris. Je vais demander.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "sensible",
+    mode: "bulle-claire",
+  },
+  {
+    id: "bc-copain-dit-plus-mon-ami",
+    title: "Mon copain m'a dit qu'il n'est plus mon ami",
+    category: "amitie",
+    context: "amitie",
+    direction: "enfant-adulte",
+    inputText:
+      "Mon copain m'a dit dans la cour : « Je ne suis plus ton ami ». Il est parti jouer avec d'autres enfants.",
+    result: {
+      original:
+        "Mon copain m'a dit dans la cour : « Je ne suis plus ton ami ». Il est parti jouer avec d'autres enfants.",
+      clearTranslation:
+        "Il a dit une phrase qui fait mal. Tu peux chercher du soutien.",
+      literalMeaning:
+        "Ton copain dit qu'il ne veut plus être ton ami maintenant.",
+      possibleSocialMeaning:
+        "Parfois les enfants disent ça quand ils sont fâchés. On ne sait pas.",
+      certain: [
+        "Il a dit cette phrase.",
+        "Il est parti jouer ailleurs.",
+        "Tu as entendu ses mots.",
+      ],
+      uncertain: [
+        "S'il le pensera encore demain.",
+        "Pourquoi il a dit ça.",
+        "Si un adulte a vu la scène.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : il était fâché sur le moment.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : il voulait jouer avec un autre groupe.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « Peux-tu m'aider avec mon copain ? »",
+      shortAnswer: "Je vais en parler à un adulte.",
+      directAnswer: "Cette phrase me fait mal. Je vais demander de l'aide.",
+      softAnswer: "Je vais respirer et chercher un adulte.",
+      professionalAnswer:
+        "Conseil adulte : accueillir la peine et proposer un jeu avec repères.",
+      boundaryAnswer:
+        "Si ça me fait trop mal, je vais voir un adulte de confiance.",
+      voiceShortVersion: "Il a dit ça. Je vais voir un adulte.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "sensible",
+    mode: "bulle-claire",
+  },
+  {
+    id: "bc-bruit-classe-trop-fort",
+    title: "Le bruit de la classe me fait mal à la tête",
+    category: "ecole",
+    context: "ecole",
+    direction: "enfant-adulte",
+    inputText:
+      "Dans la classe, il y avait beaucoup de bruit. Ma tête me faisait mal. Je voulais sortir mais je n'ai pas osé.",
+    result: {
+      original:
+        "Dans la classe, il y avait beaucoup de bruit. Ma tête me faisait mal. Je voulais sortir mais je n'ai pas osé.",
+      clearTranslation:
+        "Le bruit t'a fait mal. Tu peux demander une pause calme.",
+      literalMeaning:
+        "La classe était bruyante et ta tête faisait mal.",
+      possibleSocialMeaning:
+        "Ton corps peut avoir besoin de calme. Un adulte peut aider.",
+      certain: [
+        "Il y avait beaucoup de bruit.",
+        "Tu avais mal à la tête.",
+        "Tu n'as pas demandé à sortir.",
+      ],
+      uncertain: [
+        "Si l'adulte a vu ta gêne.",
+        "Quel endroit calme est possible.",
+        "Si cela arrive souvent.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : le bruit était trop fort pour toi.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : tu avais besoin d'une pause calme.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « Puis-je aller dans un endroit calme ? »",
+      shortAnswer: "Le bruit me fait mal. Je demande une pause.",
+      directAnswer: "J'ai mal à la tête. Je vais voir un adulte.",
+      softAnswer: "J'ai besoin d'un endroit calme.",
+      professionalAnswer:
+        "Conseil adulte : proposer un coin calme et un signal simple.",
+      boundaryAnswer:
+        "Quand le bruit me fait mal, je vais voir un adulte de confiance.",
+      voiceShortVersion: "Le bruit me fait mal. Je demande une pause.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "sensible",
+    mode: "bulle-claire",
+  },
+  {
+    id: "bc-parent-deception-note",
+    title: "Mes parents ont l'air déçus de ma note",
+    category: "famille",
+    context: "famille",
+    direction: "enfant-adulte",
+    inputText:
+      "J'ai montré ma note à mes parents. Ils ont soufflé et n'ont presque rien dit. J'ai cru qu'ils étaient déçus.",
+    result: {
+      original:
+        "J'ai montré ma note à mes parents. Ils ont soufflé et n'ont presque rien dit. J'ai cru qu'ils étaient déçus.",
+      clearTranslation:
+        "Tu as vu leurs réactions. Tu ne sais pas exactement ce qu'ils pensent.",
+      literalMeaning:
+        "Tes parents ont vu la note. Ils ont peu parlé.",
+      possibleSocialMeaning:
+        "Ils peuvent être fatigués, surpris ou inquiets. Il faut demander.",
+      certain: [
+        "Tu as montré ta note.",
+        "Ils ont soufflé.",
+        "Ils ont peu parlé.",
+      ],
+      uncertain: [
+        "Ce qu'ils pensent vraiment.",
+        "S'ils sont déçus ou inquiets.",
+        "S'ils veulent t'aider.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : ils ont été surpris par la note.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : ils cherchent comment t'aider.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « Pouvez-vous m'aider à comprendre ? »",
+      shortAnswer: "J'ai besoin d'aide pour comprendre ma note.",
+      directAnswer: "Je suis triste. Je vais demander de l'aide.",
+      softAnswer: "Je veux qu'on m'explique doucement.",
+      professionalAnswer:
+        "Conseil adulte : parler de l'effort avant le résultat.",
+      boundaryAnswer:
+        "Si je me sens mal, je vais voir un adulte de confiance.",
+      voiceShortVersion: "Je suis triste. Je demande de l'aide.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "sensible",
+    mode: "bulle-claire",
+  },
+  {
+    id: "bc-grand-frere-moqueur",
+    title: "Mon grand frère se moque de moi devant ses copains",
+    category: "famille",
+    context: "famille",
+    direction: "enfant-adulte",
+    inputText:
+      "Mon grand frère a rigolé de moi devant ses copains. Il a parlé de ma façon de marcher. J'ai voulu partir.",
+    result: {
+      original:
+        "Mon grand frère a rigolé de moi devant ses copains. Il a parlé de ma façon de marcher. J'ai voulu partir.",
+      clearTranslation:
+        "On a rigolé de toi devant d'autres personnes. Cela peut faire mal.",
+      literalMeaning:
+        "Ton frère a parlé de ta marche devant ses copains.",
+      possibleSocialMeaning:
+        "Il a peut-être voulu faire rire. Cela ne rend pas la moquerie acceptable.",
+      certain: [
+        "Ton frère a rigolé.",
+        "Ses copains étaient là.",
+        "Tu as eu envie de partir.",
+      ],
+      uncertain: [
+        "Pourquoi il l'a fait.",
+        "S'il sait que cela te blesse.",
+        "Si un parent a entendu.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : il voulait faire rire ses copains.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : il n'a pas vu ta peine.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « Peux-tu lui dire d'arrêter ? »",
+      shortAnswer: "Je vais dire à un adulte que ça me blesse.",
+      directAnswer: "Je n'aime pas ça. Je vais voir un adulte.",
+      softAnswer: "J'ai besoin qu'un adulte m'aide.",
+      professionalAnswer:
+        "Conseil adulte : poser une règle claire contre les moqueries.",
+      boundaryAnswer:
+        "Si on se moque de moi, je vais voir un adulte de confiance.",
+      voiceShortVersion: "Il se moque. Je vais voir un adulte.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "sensible",
+    mode: "bulle-claire",
+  },
+  {
+    id: "bc-changement-emploi-temps",
+    title: "L'emploi du temps a changé et je ne savais pas",
+    category: "ecole",
+    context: "ecole",
+    direction: "enfant-adulte",
+    inputText:
+      "La classe est partie en sport au lieu d'aller en musique. Je ne savais pas. J'ai paniqué dans le couloir.",
+    result: {
+      original:
+        "La classe est partie en sport au lieu d'aller en musique. Je ne savais pas. J'ai paniqué dans le couloir.",
+      clearTranslation:
+        "Le programme a changé. Tu n'étais pas prêt. Cela peut faire peur.",
+      literalMeaning:
+        "L'activité prévue a changé sans que tu le saches.",
+      possibleSocialMeaning:
+        "Les adultes ont peut-être oublié de te prévenir. Tu peux demander un repère.",
+      certain: [
+        "L'activité a changé.",
+        "Tu ne le savais pas.",
+        "Tu as paniqué.",
+      ],
+      uncertain: [
+        "Qui devait prévenir.",
+        "Si le changement était prévu.",
+        "Quel repère peut aider demain.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : un adulte a oublié d'annoncer le changement.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : le changement a été décidé vite.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « Peux-tu me prévenir avant ? »",
+      shortAnswer: "Je demande qu'on me prévienne avant.",
+      directAnswer: "Je panique quand ça change. Je vais voir un adulte.",
+      softAnswer: "J'ai besoin d'un repère quand ça change.",
+      professionalAnswer:
+        "Conseil adulte : annoncer le changement avec un pictogramme simple.",
+      boundaryAnswer:
+        "Si je panique, je vais voir un adulte de confiance.",
+      voiceShortVersion: "Ça a changé. J'ai besoin d'un adulte.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "sensible",
+    mode: "bulle-claire",
+  },
+  {
+    id: "bc-eps-pas-choisi-equipe",
+    title: "En sport on m'a choisi en dernier dans l'équipe",
+    category: "ecole",
+    context: "ecole",
+    direction: "enfant-adulte",
+    inputText:
+      "En EPS, les chefs d'équipe ont choisi les élèves. J'ai été choisi en dernier. Des enfants ont soufflé.",
+    result: {
+      original:
+        "En EPS, les chefs d'équipe ont choisi les élèves. J'ai été choisi en dernier. Des enfants ont soufflé.",
+      clearTranslation:
+        "Être choisi en dernier peut faire mal. Tu peux demander du soutien.",
+      literalMeaning:
+        "Les équipes ont été faites. Ton nom a été choisi à la fin.",
+      possibleSocialMeaning:
+        "Ce système peut blesser des enfants. Un adulte peut changer la règle.",
+      certain: [
+        "Tu as été choisi en dernier.",
+        "Des enfants ont soufflé.",
+        "C'était pendant le sport.",
+      ],
+      uncertain: [
+        "Pourquoi les enfants ont soufflé.",
+        "Si l'enseignant a remarqué.",
+        "Si une autre façon est possible.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : les équipes ont été faites trop vite.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : la règle de choix t'a mis mal.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « Peut-on faire les équipes autrement ? »",
+      shortAnswer: "Je vais demander une autre façon de faire.",
+      directAnswer: "Être choisi en dernier me blesse. Je vais le dire.",
+      softAnswer: "J'ai besoin d'aide pour le sport.",
+      professionalAnswer:
+        "Conseil adulte : faire les équipes sans classement public.",
+      boundaryAnswer:
+        "Si je me sens humilié, je vais voir un adulte de confiance.",
+      voiceShortVersion: "Ça me blesse. Je vais voir un adulte.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "sensible",
+    mode: "bulle-claire",
+  },
+  {
+    id: "bc-secret-camarade-malaise",
+    title: "Un camarade m'a dit un secret qui me met mal à l'aise",
+    category: "amitie",
+    context: "amitie",
+    direction: "enfant-adulte",
+    inputText:
+      "Un camarade m'a raconté quelque chose qui me fait peur. Depuis, j'ai mal au ventre et je ne sais pas quoi faire.",
+    result: {
+      original:
+        "Un camarade m'a raconté quelque chose qui me fait peur. Depuis, j'ai mal au ventre et je ne sais pas quoi faire.",
+      clearTranslation:
+        "Si un secret fait peur, tu peux en parler à un adulte.",
+      literalMeaning:
+        "Un camarade t'a dit quelque chose. Tu te sens mal après.",
+      possibleSocialMeaning:
+        "Un secret lourd doit être partagé avec un adulte de confiance.",
+      certain: [
+        "Le secret te fait peur.",
+        "Tu as mal au ventre.",
+        "Tu ne sais pas quoi faire.",
+      ],
+      uncertain: [
+        "Ce que le camarade voulait.",
+        "Quel adulte peut aider le plus vite.",
+        "Si le camarade est en sécurité.",
+      ],
+      hypotheses: [
+        hypothesis(
+          "Hypothèse 1 (confiance prudente) : ce secret est trop lourd pour toi.",
+          "prudente"
+        ),
+        hypothesis(
+          "Hypothèse 2 (confiance moyenne) : un adulte doit aider maintenant.",
+          "moyenne"
+        ),
+      ],
+      clarifyingQuestion:
+        "Tu peux demander à un adulte : « J'ai un secret qui me fait peur. »",
+      shortAnswer: "Je vais le dire à un adulte maintenant.",
+      directAnswer: "Ce secret me fait peur. Je vais voir un adulte.",
+      softAnswer: "J'ai besoin d'un adulte pour m'aider.",
+      professionalAnswer:
+        "Conseil adulte : écouter, rassurer, protéger, puis alerter si besoin.",
+      boundaryAnswer:
+        "Si un secret me fait peur, je vais voir un adulte de confiance.",
+      voiceShortVersion: "Ce secret me fait peur. Je vais voir un adulte.",
+    },
+    reviewedBy: "brouillon",
+    addedAt: ADDED_AT,
+    ageMin: 6,
+    ageMax: 12,
+    sensitive: "tres-sensible",
+    mode: "bulle-claire",
   },
 ];
 

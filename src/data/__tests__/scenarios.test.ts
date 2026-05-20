@@ -21,8 +21,8 @@ function collectAllText(scenario: (typeof SCENARIOS)[number]): string {
 }
 
 describe("Bibliothèque de scénarios", () => {
-  it("contient au moins 20 scénarios", () => {
-    expect(SCENARIOS.length).toBeGreaterThanOrEqual(20);
+  it("contient au moins 30 scénarios", () => {
+    expect(SCENARIOS.length).toBeGreaterThanOrEqual(30);
   });
 
   it("tous les IDs sont uniques", () => {
@@ -202,5 +202,100 @@ describe("Bibliothèque de scénarios", () => {
         ).toBeLessThan(18);
       }
     });
+  });
+});
+
+describe("Scénarios Bulle Claire (mode enfant)", () => {
+  const bulleClaireScenarios = SCENARIOS.filter(
+    (scenario) => scenario.mode === "bulle-claire"
+  );
+
+  it("contient au moins 10 scénarios Bulle Claire", () => {
+    expect(bulleClaireScenarios.length).toBeGreaterThanOrEqual(10);
+  });
+
+  it("tous les scénarios Bulle Claire sont direction enfant-adulte", () => {
+    bulleClaireScenarios.forEach((scenario) => {
+      expect(
+        ["enfant-adulte", "adulte-enfant"],
+        `Scénario "${scenario.id}" : direction incorrecte pour Bulle Claire`
+      ).toContain(scenario.direction);
+    });
+  });
+
+  it("tous les scénarios Bulle Claire ont ageMin <= 12", () => {
+    bulleClaireScenarios.forEach((scenario) => {
+      expect(
+        scenario.ageMin,
+        `Scénario Bulle Claire "${scenario.id}" : ageMin doit être <= 12`
+      ).toBeLessThanOrEqual(12);
+    });
+  });
+
+  it("aucun scénario Bulle Claire n'est sensitive=standard pour les contextes école", () => {
+    bulleClaireScenarios.forEach((scenario) => {
+      if (scenario.category === "ecole") {
+        expect(
+          scenario.sensitive,
+          `Scénario école Bulle Claire "${scenario.id}" doit être sensible ou très-sensible`
+        ).not.toBe("standard");
+      }
+    });
+  });
+
+  it("toutes les réponses courtes Bulle Claire font moins de 15 mots", () => {
+    bulleClaireScenarios.forEach((scenario) => {
+      const responses = [
+        scenario.result.shortAnswer,
+        scenario.result.directAnswer,
+        scenario.result.softAnswer,
+        scenario.result.voiceShortVersion,
+      ].filter((response): response is string => Boolean(response));
+
+      responses.forEach((response) => {
+        const wordCount = response.trim().split(/\s+/).length;
+        expect(
+          wordCount,
+          `Réponse trop longue dans "${scenario.id}" (${wordCount} mots) : "${response}"`
+        ).toBeLessThanOrEqual(15);
+      });
+    });
+  });
+
+  it("le boundaryAnswer de chaque scénario Bulle Claire mentionne un adulte", () => {
+    const adulteRegex =
+      /adulte (de confiance|référent)|parent|enseignant|cpe|infirmière|aesh|ma[îi]tre|ma[îi]tresse/i;
+
+    bulleClaireScenarios.forEach((scenario) => {
+      expect(
+        adulteRegex.test(scenario.result.boundaryAnswer),
+        `Scénario Bulle Claire "${scenario.id}" : boundaryAnswer ne mentionne aucun adulte`
+      ).toBe(true);
+    });
+  });
+
+  it("scénario du secret oriente OBLIGATOIREMENT vers un adulte", () => {
+    const secretScenario = SCENARIOS.find(
+      (scenario) => scenario.id === "bc-secret-camarade-malaise"
+    );
+    expect(secretScenario).toBeDefined();
+    if (!secretScenario) return;
+
+    const allText = [
+      secretScenario.result.clarifyingQuestion,
+      secretScenario.result.boundaryAnswer,
+      secretScenario.result.professionalAnswer,
+      secretScenario.result.shortAnswer,
+      secretScenario.result.directAnswer,
+    ].join(" ");
+
+    const orienteAdulte =
+      /adulte|parent|ma[îi]tre|ma[îi]tresse|enseignant|infirmière|aesh|cpe/i.test(
+        allText
+      );
+    expect(
+      orienteAdulte,
+      "Scénario secret DOIT orienter explicitement vers un adulte de confiance"
+    ).toBe(true);
   });
 });

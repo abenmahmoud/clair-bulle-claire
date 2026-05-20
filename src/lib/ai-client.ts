@@ -1,10 +1,13 @@
 import { analyzeText, generateResponses } from "@/lib/analysis";
+import { anonymizeText } from "@/lib/anonymize";
 import type {
   AnalysisResult,
   ContextType,
   ResponseVariant,
   TranslationDirection,
 } from "@/types";
+
+export type AnalysisSource = "scenario" | "cache" | "ai" | "fallback_scenario";
 
 interface AnalyzeClientInput {
   text: string;
@@ -16,6 +19,7 @@ interface AnalyzeClientResult {
   result: AnalysisResult;
   demo: boolean;
   provider?: string;
+  source?: AnalysisSource;
 }
 
 interface RespondClientInput {
@@ -32,10 +36,15 @@ interface RespondClientResult {
 
 export async function analyzeWithAI(input: AnalyzeClientInput): Promise<AnalyzeClientResult> {
   try {
+    const anonymizedInput: AnalyzeClientInput = {
+      ...input,
+      text: anonymizeText(input.text),
+    };
+
     const response = await fetch("/api/analyze", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(input),
+      body: JSON.stringify(anonymizedInput),
     });
 
     if (!response.ok) throw new Error(`Analyse HTTP ${response.status}`);
@@ -48,6 +57,7 @@ export async function analyzeWithAI(input: AnalyzeClientInput): Promise<AnalyzeC
       result: analyzeText(input.text, input.direction, input.context),
       demo: true,
       provider: "mock",
+      source: "fallback_scenario",
     };
   }
 }

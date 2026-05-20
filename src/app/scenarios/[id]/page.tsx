@@ -40,6 +40,12 @@ export default async function ScenarioDetailPage({ params }: PageProps) {
         Tous les scénarios
       </Link>
 
+      {scenario.mode === "bulle-claire" ? (
+        <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-[#FFEDD5] px-3 py-1 text-xs font-semibold text-[#9A3412]">
+          🌱 Mode enfant — Bulle Claire
+        </div>
+      ) : null}
+
       {scenario.sensitive !== "standard" ? (
         <UrgencyBanner level={scenario.sensitive} />
       ) : null}
