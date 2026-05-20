@@ -30,7 +30,7 @@ describe("analyzeWithAI", () => {
   });
 
   it("envoie un texte anonymisé à /api/analyze", async () => {
-    const fetchMock = vi.fn(async () => {
+    const fetchMock = vi.fn<typeof fetch>(async () => {
       return new Response(
         JSON.stringify({ result: fakeResult, demo: false, source: "ai" }),
         {
@@ -48,7 +48,8 @@ describe("analyzeWithAI", () => {
       context: "travail",
     });
 
-    const [, init] = fetchMock.mock.calls[0];
+    const firstCall = fetchMock.mock.calls[0];
+    const init = firstCall?.[1] as RequestInit | undefined;
     const body = JSON.parse(String(init?.body)) as { text: string };
 
     expect(body.text).toBe(
