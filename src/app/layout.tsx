@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import BottomNav from "@/components/layout/BottomNav";
+import { SiteFooter } from "@/components/SiteFooter";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang="fr" className={`${inter.variable} antialiased`}>
       <body className="min-h-screen bg-[#F8F6F0] font-sans">
         {children}
+        <SiteFooter />
         <BottomNav />
       </body>
     </html>

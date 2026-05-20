@@ -14,10 +14,12 @@ import {
 } from "lucide-react";
 import AppShell from "@/components/layout/AppShell";
 import AnalysisCard from "@/components/ui/AnalysisCard";
+import { DistressOverlay } from "@/components/DistressOverlay";
 import HypothesisCard from "@/components/ui/HypothesisCard";
 import ResponseVariantCard from "@/components/ui/ResponseVariantCard";
 import Toast from "@/components/ui/Toast";
 import { analyzeWithAI } from "@/lib/ai-client";
+import { detectDistress } from "@/lib/distress-detection";
 import { saveAnalysis } from "@/lib/storage";
 import type {
   AnalysisResult,
@@ -48,8 +50,11 @@ function ResultContent() {
   const [viewMode, setViewMode] = useState<ViewMode>("essential");
   const [toast, setToast] = useState({ message: "", visible: false });
   const [saved, setSaved] = useState(false);
+  const [showDistress, setShowDistress] = useState(() => detectDistress(text));
 
   useEffect(() => {
+    if (showDistress) return;
+
     let cancelled = false;
 
     void analyzeWithAI({ text, direction, context }).then((payload) => {
@@ -61,7 +66,7 @@ function ResultContent() {
     return () => {
       cancelled = true;
     };
-  }, [text, direction, context]);
+  }, [text, direction, context, showDistress]);
 
   const showToast = useCallback((message: string) => {
     setToast({ message, visible: true });
@@ -99,6 +104,10 @@ function ResultContent() {
       showToast("Lecture vocale non disponible");
     }
   }, [result, showToast]);
+
+  if (showDistress) {
+    return <DistressOverlay onContinue={() => setShowDistress(false)} />;
+  }
 
   if (!result) {
     return (
