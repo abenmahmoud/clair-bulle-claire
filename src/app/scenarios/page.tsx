@@ -23,12 +23,35 @@ const CATEGORY_META: Record<
   administration: { label: "Administration", icon: FileText, color: "#5C7894" },
 };
 
-export default function ScenariosPage() {
+const AGE_FILTERS = [
+  { label: "Tous", href: "/scenarios", age: null },
+  { label: "Enfant (8-13)", href: "/scenarios?age=10", age: 10 },
+  { label: "Adolescent (14-17)", href: "/scenarios?age=15", age: 15 },
+  { label: "Adulte (18+)", href: "/scenarios?age=18", age: 18 },
+] as const;
+
+interface PageProps {
+  searchParams?: Promise<{ age?: string }>;
+}
+
+export default async function ScenariosPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const ageParam = params?.age ? Number(params.age) : null;
+  const selectedAge =
+    typeof ageParam === "number" && Number.isFinite(ageParam) ? ageParam : null;
+  const filteredScenarios =
+    selectedAge === null
+      ? SCENARIOS
+      : SCENARIOS.filter(
+          (scenario) =>
+            scenario.ageMin <= selectedAge && selectedAge <= scenario.ageMax
+        );
+
   const byCategory = (Object.keys(CATEGORY_META) as ScenarioCategory[]).map(
     (category) => ({
       category,
       meta: CATEGORY_META[category],
-      items: SCENARIOS.filter((scenario) => scenario.category === category),
+      items: filteredScenarios.filter((scenario) => scenario.category === category),
     })
   );
 
@@ -44,7 +67,31 @@ export default function ScenariosPage() {
           Ces scénarios sont des brouillons. Ils seront affinés par un comité
           éthique avant validation définitive.
         </p>
+        <nav className="mt-4 flex flex-wrap gap-2" aria-label="Filtrer par âge">
+          {AGE_FILTERS.map((filter) => {
+            const active = selectedAge === filter.age;
+            return (
+              <Link
+                key={filter.label}
+                href={filter.href}
+                className={`rounded-full border px-3 py-1.5 text-xs font-medium ${
+                  active
+                    ? "border-[#3563E9] bg-[#EDF4FF] text-[#3563E9]"
+                    : "border-[#E2E0D9] bg-white text-[#475569]"
+                }`}
+              >
+                {filter.label}
+              </Link>
+            );
+          })}
+        </nav>
       </header>
+
+      {filteredScenarios.length === 0 ? (
+        <p className="mt-6 rounded-2xl border border-[#E2E0D9] bg-white p-4 text-sm text-[#475569]">
+          Aucun scénario ne correspond à ce filtre d&apos;âge pour l&apos;instant.
+        </p>
+      ) : null}
 
       {byCategory.map(({ category, meta, items }) =>
         items.length > 0 ? (

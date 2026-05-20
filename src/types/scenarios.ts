@@ -8,6 +8,8 @@ export type ScenarioCategory =
   | "ecole"
   | "administration";
 
+export type SensitivityLevel = "standard" | "sensible" | "tres-sensible";
+
 export interface Scenario {
   id: string;
   title: string;
@@ -18,4 +20,7 @@ export interface Scenario {
   result: AnalysisResult;
   reviewedBy?: "brouillon" | "relu-interne" | "valide-comite";
   addedAt: string;
+  ageMin: number;
+  ageMax: number;
+  sensitive: SensitivityLevel;
 }

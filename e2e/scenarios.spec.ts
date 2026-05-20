@@ -32,4 +32,17 @@ test.describe("Bibliothèque de scénarios", () => {
 
     await expect(page.locator("body")).toContainText(/brouillon|relu|validé/i);
   });
+
+  test("bandeau urgence visible sur scénario sensible", async ({ page }) => {
+    await page.goto("/scenarios/ecole-camarade-tes-chelou");
+    await expect(page.locator("aside")).toContainText(/3018|119|3114/);
+  });
+
+  test("scénarios standards n'affichent PAS de bandeau urgence", async ({
+    page,
+  }) => {
+    await page.goto("/scenarios/travail-collegue-on-verra");
+    const banners = page.locator("aside[aria-label='Information de soutien']");
+    expect(await banners.count()).toBe(0);
+  });
 });
